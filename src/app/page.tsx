@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center min-h-screen bg-[#0F0F0F]">
       <Header />
-      <div className="w-full min-h-screen flex flex-col items-center justify-start pt-[144px] bg-[url('/images/home_bg.webp')] bg-cover bg-center">
+      <div className="w-full min-h-screen flex flex-col items-center justify-start pt-[144px] bg-[url('/images/home_bg.webp')] max-w-[1440px] bg-cover bg-center">
         <ScrollAnimation
           type="fade"
           direction="down"
@@ -68,7 +68,7 @@ export default function Home() {
         </div>
 
         <StaggeredContainer
-          className="flex flex-col mt-8 gap-3"
+          className="flex flex-col mt-8"
           delay={0.2}
           staggerDelay={0.15}
           type="slide"
@@ -80,7 +80,7 @@ export default function Home() {
               direction="left"
               duration={0.7}
               delay={0.1}
-              className="flex flex-col justify-end items-end bg-[url('/images/card.webp')] bg-cover bg-center lg:min-w-[733px] w-[733px] h-full p-4 rounded-xl transition-all duration-300"
+              className="flex flex-col justify-end items-end bg-[url('/images/card.png')] bg-cover bg-center lg:min-w-[733px] w-[733px] h-full p-4 rounded-xl transition-all duration-300"
             >
               <div className="p-4 rounded-lg w-full">
                 <h1 className="text-[#EEE] text-[24px] xl:text-[28px] w-full leading-[61.6px]">

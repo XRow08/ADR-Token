@@ -137,7 +137,7 @@ export const Card2 = ({
       </motion.div>
 
       {/* Retângulos versão mobile */}
-      <div className="absolute top-0 left-0 w-full md:hidden flex items-start justify-between px-6 py-4">
+      <div className="absolute top-0 left-0 w-full md:hidden flex items-start justify-between px-6">
         <motion.div
           className="w-1/4"
           style={{ zIndex: 1, transformOrigin: "top" }}

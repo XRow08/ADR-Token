@@ -153,7 +153,7 @@ export const Card3 = ({
           <motion.div
             style={{
               zIndex: 1,
-              width: "70px",
+              width: "100px",
               transformOrigin: "top",
             }}
             animate={{
@@ -173,7 +173,7 @@ export const Card3 = ({
           <motion.div
             style={{
               zIndex: 1,
-              width: "70px",
+              width: "100px",
               transformOrigin: "top",
             }}
             animate={{

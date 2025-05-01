@@ -30,12 +30,6 @@ export default {
         neutral_800: "#111112",
         neutral_900: "#0A0A0B",
       },
-      fontFamily: {
-        robotoMono: ["Roboto Mono", "monospace"],
-        satoshi: ["Satoshi", "sans-serif"],
-        "neulis-neue": ["var(--font-neulis-neue)"],
-        "neulis-sans": ["var(--font-neulis-sans)"],
-      },
     },
   },
   plugins: [scrollbar({ nocompatible: true })],

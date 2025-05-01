@@ -18,7 +18,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    "px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out";
+    "px-6 py-2 rounded-md font-bold transition-all duration-300 ease-in-out";
   const variantStyles = {
     primary:
       "bg-gradient-to-br hover:from-[#24682B] hover:to-[#0B3B10] from-[#0B3B10] to-[#24682B] text-[#ADF0B4] border-[1.5px] border-[#28D939] hover:scale-[1.02]",

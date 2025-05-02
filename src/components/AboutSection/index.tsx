@@ -14,14 +14,14 @@ export const AboutSection = () => {
         className="w-full flex flex-col items-start justify-start "
       >
         <h1 className="text-[#EEE] text-[24px] xl:text-[36px] font-bold w-full md:leading-[61.6px]">
-          <span className="font-black">Adriano Token</span> da Vila Cruzeiro para o
-          Mundo
+          <span className="font-black">Adriano Token</span> from Vila Cruzeiro to the
+          World
         </h1>
         <p className="xl:text-lg xl:leading-[23.4px] text-[#B4B4B4]">
-          Ídolo do futebol mundial e orgulho do Brasil, Adriano Imperador
-          apresenta seu token oficial: um projeto que celebra sua <br />{" "}
-          trajetória e impulsiona ações sociais para transformar a comunidade
-          onde tudo começou.
+          World football icon and pride of Brazil, Adriano Imperador
+          presents his official token: a project that celebrates his <br />{" "}
+          journey and drives social actions to transform the community
+          where it all began.
         </p>
       </ScrollAnimation>
       <ScrollAnimation

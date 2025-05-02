@@ -2,6 +2,8 @@ import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { TokenInfoSection } from "@/components/TokenInfoSection";
 import { ImpactSection } from "@/components/ImpactSection";
+import { CarouselSection } from "@/components/CarouselSection";
+import { TokenomicsChart } from "@/components/TokenomicsChart";
 
 export default function Home() {
   return (
@@ -10,6 +12,8 @@ export default function Home() {
       <HeroSection />
       <TokenInfoSection />
       <ImpactSection />
+      <CarouselSection />
+      <TokenomicsChart />
     </section>
   );
 }

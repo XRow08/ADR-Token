@@ -1,9 +1,9 @@
 "use client";
 import type { PropsWithChildren } from "react";
-import WagmiProvider from "./WagmiProvider";
+import SolanaProvider from "./SolanaProvider";
 
 const Providers = ({ children }: PropsWithChildren) => {
-  return <WagmiProvider>{children}</WagmiProvider>;
+  return <SolanaProvider>{children}</SolanaProvider>;
 };
 
 export default Providers;

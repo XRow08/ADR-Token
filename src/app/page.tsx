@@ -2,6 +2,11 @@ import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { TokenInfoSection } from "@/components/TokenInfoSection";
 import { ImpactSection } from "@/components/ImpactSection";
+import { CarouselSection } from "@/components/CarouselSection";
+import { TokenomicsChart } from "@/components/TokenomicsChart";
+import { JoinSection } from "@/components/JoinSection";
+import { FaqSection } from "@/components/FaqSection";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -10,6 +15,11 @@ export default function Home() {
       <HeroSection />
       <TokenInfoSection />
       <ImpactSection />
+      <CarouselSection />
+      <TokenomicsChart />
+      <JoinSection />
+      <FaqSection />
+      <Footer />
     </section>
   );
 }

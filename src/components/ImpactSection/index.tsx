@@ -14,17 +14,16 @@ export const ImpactSection = () => {
           delay={0.1}
         >
           <h1 className="text-[#EEE] text-[30px] xl:text-[36px] w-full font-bold text-center leading-[40px] md:leading-[61.6px]">
-            Blockchain e Impacto Social
+            Blockchain and Social Impact
           </h1>
         </ScrollAnimation>
 
         <ScrollAnimation type="fade" direction="up" duration={0.7} delay={0.3}>
           <p className="xl:leading-[23.4px] text-center text-[#B4B4B4]">
-            O avanço da tecnologia blockchain e das criptomoedas vai além das
-            finanças, abrindo espaço para iniciativas de impacto social. Tokens
-            como o Adriano Token combinam potencial financeiro e transformação
-            social, criando projetos onde o sucesso econômico impulsiona
-            benefícios reais para comunidades.
+            The advancement of blockchain technology and cryptocurrencies goes beyond
+            finance, creating opportunities for social impact initiatives. Tokens
+            like the Adriano Token combine financial potential and social transformation,
+            creating projects where economic success drives real benefits for communities.
           </p>
         </ScrollAnimation>
       </div>
@@ -38,7 +37,7 @@ export const ImpactSection = () => {
         <div className="relative w-full h-[368px] rounded-xl overflow-hidden">
           <Image
             src="/images/bg-section3.png"
-            alt="Blockchain e Impacto Social"
+            alt="Blockchain and Social Impact"
             fill
             className="object-cover"
             priority
@@ -48,9 +47,9 @@ export const ImpactSection = () => {
 
       <ScrollAnimation type="slide" direction="up" duration={0.6} delay={0.6}>
         <p className="xl:leading-[23.4px] text-center text-[#B4B4B4] max-w-[1062px] mt-4 px-6 md:px-0">
-          As vantagens desse modelo incluem transparência, eliminação de
-          intermediários, alcance global, engajamento comunitário e
-          sustentabilidade financeira
+          The advantages of this model include transparency, elimination of
+          intermediaries, global reach, community engagement, and
+          financial sustainability.
         </p>
       </ScrollAnimation>
     </div>

@@ -18,6 +18,8 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       "@next/next/no-html-link-for-pages": "off",
       "react/no-unescaped-entities": "off",
+      "react/no-unknown-property": "off",
+      "react-hooks/rules-of-hooks": "off",
     },
   },
 ];

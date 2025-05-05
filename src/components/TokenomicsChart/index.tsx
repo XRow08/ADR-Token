@@ -13,11 +13,11 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const tokenDistribution = [
   { label: "Liquidity", percentage: 25, color: "#FFCA16" },
-  { label: "Adriano Imperador", percentage: 20, color: "#FE852E" },
-  { label: "Public Distribution", percentage: 20, color: "#FFFFFF" },
+  { label: "Charity", percentage: 15, color: "#FE852E" },
+  { label: "Public Distribution", percentage: 25, color: "#FFFFFF" },
   { label: "Team", percentage: 15, color: "#3A62FF" },
-  { label: "Marketing Operations", percentage: 15, color: "#C665FF" },
-  { label: "CEX", percentage: 5, color: "#1FD822" },
+  { label: "Marketing Operations", percentage: 12, color: "#C665FF" },
+  { label: "CEX", percentage: 8, color: "#1FD822" },
 ];
 
 export const TokenomicsChart = () => {

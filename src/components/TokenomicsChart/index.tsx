@@ -39,7 +39,6 @@ export const TokenomicsChart = () => {
     }
   }, []);
 
-  // Chart data
   const chartData = {
     labels: tokenDistribution.map(
       (item) => `${item.percentage}% ${item.label}`

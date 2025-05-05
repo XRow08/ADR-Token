@@ -1,44 +1,86 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import BoxCard, { BoxItem } from "@/components/BoxCard";
+import { useState, useRef } from "react";
+import BoxCard from "@/components/BoxCard";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
 import { Header } from "@/components/Header";
 
-const boxData: BoxItem[] = [
+const boxData = [
   {
     id: "adr-premium",
-    title: "ADR prêmios",
-    image: "/images/adr-caixa.png",
+    title: "ADR prizes",
+    image: "/images/boxes/adr-prizes.png",
     price: 10.21,
   },
   {
     id: "cryptos",
     title: "Cryptos",
-    image: "/images/adr-caixa.png",
-    price: 10.21,
+    image: "/images/boxes/cripto.png",
+    price: 50.5,
   },
   {
     id: "super-premio",
-    title: "Super prêmio",
-    image: "/images/adr-caixa.png",
-    price: 10.21,
+    title: "Super prize",
+    image: "/images/boxes/super-prize.png",
+    price: 199.9,
   },
 ];
 
 export default function BoxesPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    },
+  };
+
+  const bannerVariants = {
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { duration: 0.8, ease: "easeOut" }
+    },
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-[#0F0F0F] text-white pb-24 w-full">
       <Header />
-
-      <div className="container w-full py-8 md:pt-[80px] mt-[80px] max-w-[1280px] md:mt-0 px-6 md:px-0">
-        <div className='bg-[url("/images/banner.png")] bg-cover bg-center h-[320px] sm:h-[320px] rounded-xl mb-8' />
-        <div className="flex items-center justify-between mb-8">
+      <div className="container w-full py-8 md:pt-[80px] mt-[80px] max-w-[1280px] md:mt-20 px-6 md:px-0">
+        <motion.div 
+          className='bg-[url("/images/banner.png")] bg-cover bg-center h-[220px] sm:h-[320px] rounded-xl mb-8'
+          variants={bannerVariants}
+          initial="hidden"
+          animate="visible"
+        />
+        
+        <motion.div 
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <h2 className="text-2xl font-bold">All Boxes</h2>
-          <div className="flex items-center space-x-2">
-            <div className="text-sm text-[#B4B4B4] flex items-center bg-[#191919] rounded-lg px-4 py-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+            <div className="text-sm text-[#B4B4B4] flex items-center bg-[#191919] rounded-lg px-4 py-2 w-full sm:w-auto">
               <span>Recentes</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -55,11 +97,11 @@ export default function BoxesPage() {
                 />
               </svg>
             </div>
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <input
                 type="text"
                 placeholder="Search..."
-                className="bg-[#191919] rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 pl-8"
+                className="bg-[#191919] rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 pl-8 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -79,13 +121,21 @@ export default function BoxesPage() {
               </svg>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+        <motion.div 
+          ref={containerRef}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {boxData.map((box) => (
-            <BoxCard key={box.id} box={box} />
+            <motion.div key={box.id} variants={itemVariants}>
+              <BoxCard box={box} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

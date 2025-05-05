@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ScrollAnimation } from "../ScrollAnimation";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { Button } from "../Button";
+import Link from "next/link";
 
 export function Footer() {
   const logoVariants = {
@@ -54,15 +55,12 @@ export function Footer() {
           </motion.div>
 
           <div className="flex items-center space-x-4 sm:space-x-6">
-            <h1 className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold">
-              Box
-            </h1>
-            <h1 className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold hidden sm:block">
-              Wallet
-            </h1>
-            <h1 className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold hidden md:block">
-              About
-            </h1>
+            <Link href="/boxes" className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold">
+              Boxes
+            </Link>
+            <Link href="/transactions" className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold hidden md:block">
+              Transactions
+            </Link>
           </div>
         </div>
 
@@ -70,7 +68,7 @@ export function Footer() {
 
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-[#BDBDBD] text-xs sm:text-sm text-center sm:text-left">
-            © 2024 ADR Token. All rights reserved.
+            © 2025 ADR Token. All rights reserved.
           </div>
 
           <Button className="w-full sm:w-auto py-3 px-4 sm:px-6 text-sm sm:text-base">

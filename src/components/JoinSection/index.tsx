@@ -26,7 +26,7 @@ export function JoinSection() {
               </p>
             </div>
             <Button className="w-full sm:w-[290px] py-3 sm:h-[56px] text-sm sm:text-base">
-              Buy token $ADR
+              Buy token $xxx
             </Button>
           </div>
 

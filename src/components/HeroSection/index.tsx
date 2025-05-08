@@ -18,14 +18,14 @@ export const HeroSection = () => {
 
       <ScrollAnimation type="fade" direction="up" duration={0.7} delay={0.5}>
         <p className="xl:text-lg md:leading-[23.4px] text-center text-[#B4B4B4] mt-4 px-6 md:px-0">
-          Own a piece of Adriano Imperador legacy. Be a part of the $ADR
+          Own a piece of Adriano Imperador legacy. Be a part of the $xxx
           movement—where <br /> holders play, win, and unlock exclusive rewards.
         </p>
       </ScrollAnimation>
 
       <ScrollAnimation type="scale" duration={0.6} delay={0.8}>
         <Button className="mt-[20px] md:mt-[40px] w-[287px] h-[56px]">
-          Buy token $ADR
+          Buy token $xxx
         </Button>
       </ScrollAnimation>
     </div>

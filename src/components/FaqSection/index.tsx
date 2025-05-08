@@ -7,9 +7,9 @@ import { IoIosArrowDown } from "react-icons/io";
 
 const faqData = [
   {
-    question: "What is the tokenomics of the $ADR token?",
+    question: "What is the tokenomics of the $xxx token?",
     answer:
-      "The $ADR token is a utility token for the Vila Cruzeiro community. It has a fixed supply of 1 billion tokens, with 30% allocated to community initiatives, 25% for platform development, 20% for the team and advisors (vested over 3 years), 15% for marketing and partnerships, and 10% for liquidity provisioning.",
+      "The $xxx token is a utility token for the Vila Cruzeiro community. It has a fixed supply of 1 billion tokens, with 30% allocated to community initiatives, 25% for platform development, 20% for the team and advisors (vested over 3 years), 15% for marketing and partnerships, and 10% for liquidity provisioning.",
   },
   {
     question: "How can I use ADR Tokens on the platform?",
@@ -121,7 +121,7 @@ export function FaqSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="w-full sm:w-auto"
           >
-            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">Buy token $ADR</Button>
+            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">Buy token $xxx</Button>
           </motion.div>
         </div>
 

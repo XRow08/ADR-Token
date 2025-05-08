@@ -50,7 +50,7 @@ export function Footer() {
                 transition: { duration: 0.2 },
               }}
             >
-              $ADR
+              $xxx
             </motion.span>
           </motion.div>
 
@@ -72,7 +72,7 @@ export function Footer() {
           </div>
 
           <Button className="w-full sm:w-auto py-3 px-4 sm:px-6 text-sm sm:text-base">
-            Buy token $ADR
+            Buy token $xxx
           </Button>
         </div>
       </ScrollAnimation>

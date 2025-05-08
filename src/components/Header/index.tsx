@@ -213,7 +213,7 @@ export function Header() {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  $ADR
+                  $xxx
                 </motion.span>
               </div>
             </Link>
@@ -278,7 +278,7 @@ export function Header() {
               variants={buttonVariants}
             >
               <Button className="text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6">
-                Buy token $ADR
+                Buy token $xxx
               </Button>
             </motion.div>
           </div>
@@ -498,7 +498,7 @@ export function Header() {
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                       </svg>
-                      Buy token $ADR
+                      Buy token $xxx
                     </Button>
                   </motion.div>
                 </motion.div>

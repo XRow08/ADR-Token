@@ -33,7 +33,7 @@ export const FeaturesGrid = () => {
         />
 
         <Card4 
-          buttonText="Buy token $ADR"
+          buttonText="Buy token $xxx"
           width="w-full"
         />
       </div>
@@ -65,7 +65,7 @@ export const FeaturesGrid = () => {
         
         <div className="h-[140px] w-full">
           <Card4 
-            buttonText="Buy token $ADR"
+            buttonText="Buy token $xxx"
             width="w-full"
           />
         </div>

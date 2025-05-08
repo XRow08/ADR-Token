@@ -10,7 +10,7 @@ export const HeroSection = () => {
         <h1 className="text-[#EEE] text-[36px] xl:text-[56px] font-semibold w-full text-center leading-[40px] md:leading-[61.6px]">
           The only official <br />{" "}
           <span className="bg-gradient-to-r from-[#FFF7A8] to-[#FFEB28] font-black bg-clip-text text-transparent">
-            Adriano Imperador
+            XXXiano Imperador
           </span>{" "}
           token
         </h1>
@@ -18,7 +18,7 @@ export const HeroSection = () => {
 
       <ScrollAnimation type="fade" direction="up" duration={0.7} delay={0.5}>
         <p className="xl:text-lg md:leading-[23.4px] text-center text-[#B4B4B4] mt-4 px-6 md:px-0">
-          Own a piece of Adriano Imperador legacy. Be a part of the $xxx
+          Own a piece of XXXiano Imperador legacy. Be a part of the $xxx
           movement—where <br /> holders play, win, and unlock exclusive rewards.
         </p>
       </ScrollAnimation>

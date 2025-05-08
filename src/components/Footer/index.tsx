@@ -68,7 +68,7 @@ export function Footer() {
 
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-[#BDBDBD] text-xs sm:text-sm text-center sm:text-left">
-            © 2025 ADR Token. All rights reserved.
+            © 2025 XXX Token. All rights reserved.
           </div>
 
           <Button className="w-full sm:w-auto py-3 px-4 sm:px-6 text-sm sm:text-base">

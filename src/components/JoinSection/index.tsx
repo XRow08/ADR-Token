@@ -21,7 +21,7 @@ export function JoinSection() {
                 Join the movement
               </h1>
               <p className="text-[#BDBDBD] text-xs sm:text-sm xl:text-[16px] mt-2">
-                With ADR Token, you're not just entering the crypto universe —
+                With XXX Token, you're not just entering the crypto universe —
                 Help transform Vila Cruzeiro with every token acquired
               </p>
             </div>

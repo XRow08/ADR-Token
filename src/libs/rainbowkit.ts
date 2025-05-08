@@ -30,7 +30,7 @@ const connectors = connectorsForWallets(
     },
   ],
   {
-    appName: "ADR Token",
+    appName: "XXX Token",
     projectId: "4ebbf2eddb8738c4c84cd8082b5e9756",
   }
 );

@@ -14,11 +14,11 @@ export const AboutSection = () => {
         className="w-full flex flex-col items-start justify-start "
       >
         <h1 className="text-[#EEE] text-[24px] xl:text-[36px] font-bold w-full md:leading-[61.6px]">
-          <span className="font-black">Adriano Token</span> from Vila Cruzeiro to the
+          <span className="font-black">XXXiano Token</span> from Vila Cruzeiro to the
           World
         </h1>
         <p className="xl:text-lg xl:leading-[23.4px] text-[#B4B4B4]">
-          World football icon and pride of Brazil, Adriano Imperador
+          World football icon and pride of Brazil, XXXiano Imperador
           presents his official token: a project that celebrates his <br />{" "}
           journey and drives social actions to transform the community
           where it all began.

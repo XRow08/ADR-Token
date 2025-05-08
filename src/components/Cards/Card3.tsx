@@ -77,8 +77,8 @@ export const Card3 = ({
           }}
         >
           <img
-            src="/animation/card3/img-adriano2.png"
-            alt="Adriano"
+            src="/animation/card3/img-XXXiano2.png"
+            alt="XXXiano"
             className="h-[300px] object-contain"
           />
         </motion.div>
@@ -143,8 +143,8 @@ export const Card3 = ({
           }}
         >
           <img
-            src="/animation/card3/img-adriano2.png"
-            alt="Adriano"
+            src="/animation/card3/img-XXXiano2.png"
+            alt="XXXiano"
             className="h-[220px] object-contain"
           />
         </motion.div>

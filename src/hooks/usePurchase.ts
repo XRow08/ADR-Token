@@ -1,205 +1,206 @@
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+"use client";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
+  Connection,
+  Keypair,
   PublicKey,
-  Transaction,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-  TransactionInstruction,
 } from "@solana/web3.js";
 import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddress,
-  createAssociatedTokenAccountInstruction,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { useCallback } from "react";
+import { useEffect, useState } from "react";
+import { Program, AnchorProvider, BN } from '@coral-xyz/anchor';
+import { idl } from "@/constants/idl";
 
-// Configurações do programa
-const PROGRAM_ID = new PublicKey(
-  "EiQYWvbnjdmoQjgeP19ULboDs1XNB5kP1bgXx7rGvgV9"
-);
-const TOKEN_MINT = new PublicKey(
-  "FkrCkX4HfbRU1g5pbaU97nSZusQavmKwqNpEY1nBE9ti"
-);
+const COLLECTION_NAME = "ADR Collection";
+const COLLECTION_SYMBOL = "ADR";
+const COLLECTION_URI = "https://your-collection-uri.com";
 
 export function usePurchase() {
-  const { connection } = useConnection();
   const wallet = useWallet();
+  const [program, setProgram] = useState<any>(null);
+  const [collectionMint, setCollectionMint] = useState<Keypair | null>(null);
+  const [collectionMetadata, setCollectionMetadata] = useState<Keypair | null>(null);
+  const [configAccount, setConfigAccount] = useState<Keypair | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const purchase = useCallback(
-    async (amount: number, itemId: string) => {
-      if (!wallet.publicKey || !wallet.signTransaction) {
-        throw new Error("Carteira não conectada ou não suporta assinatura");
-      }
+  useEffect(() => {
+    if (wallet.connected) {
+      const connection = new Connection("https://api.testnet.solana.com", "confirmed");
 
-      try {
-        console.log("Iniciando compra com:", {
-          amount,
-          itemId,
-          buyerPubkey: wallet.publicKey.toString(),
-        });
+      const provider = new AnchorProvider(
+        connection,
+        wallet as any,
+        { preflightCommitment: "processed" }
+      );
 
-        // Verificar se itemId é uma string válida
-        if (!itemId || typeof itemId !== "string") {
-          throw new Error("ID do item inválido");
-        }
+      const program = new Program(idl, provider)
 
-        // Encontrar o PDA do pool
-        const [poolPDA] = PublicKey.findProgramAddressSync(
-          [Buffer.from("token-pool"), TOKEN_MINT.toBuffer()],
-          PROGRAM_ID
-        );
-        console.log("Pool PDA:", poolPDA.toString());
+      console.log(program);
+      setProgram(program);
+      initializeCollection(program);
+    }
+  }, [wallet.connected]);
 
-        // Encontrar o PDA do token vault
-        const [tokenVaultPDA] = PublicKey.findProgramAddressSync(
-          [Buffer.from("token-vault"), poolPDA.toBuffer()],
-          PROGRAM_ID
-        );
-        console.log("Token Vault PDA:", tokenVaultPDA.toString());
+  const initializeCollection = async (program: any) => {
+    if (!program) return;
 
-        // Encontrar o PDA do histórico de compras
-        const [purchaseHistoryPDA] = PublicKey.findProgramAddressSync(
-          [Buffer.from("purchase-history")],
-          PROGRAM_ID
-        );
-        console.log("Purchase History PDA:", purchaseHistoryPDA.toString());
+    try {
+      setLoading(true);
 
-        // Encontrar o PDA de guarda contra reentrância
-        const [reentrancyGuardPDA] = PublicKey.findProgramAddressSync(
-          [Buffer.from("reentrancy-guard")],
-          PROGRAM_ID
-        );
-        console.log("Reentrancy Guard PDA:", reentrancyGuardPDA.toString());
+      const newCollectionMint = Keypair.generate();
+      const newCollectionMetadata = Keypair.generate();
+      const newConfigAccount = Keypair.generate();
 
-        // Obter o endereço da conta associada de token do usuário
-        const buyerTokenAccount = await getAssociatedTokenAddress(
-          TOKEN_MINT,
-          wallet.publicKey,
-          true // allowOwnerOffCurve
-        );
-        console.log("Buyer Token Account:", buyerTokenAccount.toString());
+      const collectionTokenAccount = await getAssociatedTokenAddress(
+        newCollectionMint.publicKey,
+        wallet.publicKey as any
+      );
 
-        // Verificar se a conta de token do comprador existe
-        const transaction = new Transaction();
-        try {
-          const accountInfo = await connection.getAccountInfo(
-            buyerTokenAccount
-          );
-          if (!accountInfo) {
-            console.log("Conta de token não existe, criando...");
-            // Se a conta não existir, criar instrução para criá-la
-            const createATAIx = createAssociatedTokenAccountInstruction(
-              wallet.publicKey,
-              buyerTokenAccount,
-              wallet.publicKey,
-              TOKEN_MINT
-            );
-            transaction.add(createATAIx);
-          }
-        } catch (error) {
-          console.log("Erro ao verificar conta, tentando criar:", error);
-          // Em caso de erro, tentar criar a conta
-          const createATAIx = createAssociatedTokenAccountInstruction(
-            wallet.publicKey,
-            buyerTokenAccount,
-            wallet.publicKey,
-            TOKEN_MINT
-          );
-          transaction.add(createATAIx);
-        }
+      const tx = await program.methods
+        .initializeCollection(COLLECTION_NAME, COLLECTION_SYMBOL, COLLECTION_URI)
+        .accounts({
+          payer: wallet.publicKey,
+          collectionMint: newCollectionMint.publicKey,
+          collectionMetadata: newCollectionMetadata.publicKey,
+          collectionTokenAccount,
+          config: newConfigAccount.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        })
+        .signers([newCollectionMint, newCollectionMetadata, newConfigAccount])
+        .rpc();
 
-        console.log("Preparando instrução de compra simulada...");
+      console.log("Coleção inicializada:", tx);
 
-        // Codificar o comando de compra manualmente
-        const itemIdBuffer = Buffer.from(itemId);
-        const amountBuffer = Buffer.alloc(8);
+      setCollectionMint(newCollectionMint);
+      setCollectionMetadata(newCollectionMetadata);
+      setConfigAccount(newConfigAccount);
 
-        // Escrever o valor como BigInt
-        amountBuffer.writeBigUInt64LE(BigInt(amount), 0);
+    } catch (error) {
+      console.error("Erro ao inicializar coleção:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Combinando os buffers
-        const dataBuffer = Buffer.concat([
-          Buffer.from([1]), // Código da instrução (1 = purchase)
-          amountBuffer, // Valor da compra
-          itemIdBuffer, // ID do item
-        ]);
+  const setPaymentToken = async (paymentTokenMint: string) => {
+    if (!program || !configAccount) return;
 
-        console.log("Buffer de dados criado com sucesso:", {
-          totalSize: dataBuffer.length,
-          instruction: 1,
-          amount: amount,
-          itemId: itemId,
-        });
+    try {
+      setLoading(true);
+      const tx = await program.methods
+        .setPaymentToken(new PublicKey(paymentTokenMint))
+        .accounts({
+          admin: wallet.publicKey,
+          config: configAccount.publicKey,
+        })
+        .rpc();
+      console.log("Token de pagamento definido:", tx);
+    } catch (error) {
+      console.error("Erro ao definir token de pagamento:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Criar a instrução de purchase
-        const purchaseIx = new TransactionInstruction({
-          programId: PROGRAM_ID,
-          keys: [
-            { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
-            { pubkey: buyerTokenAccount, isSigner: false, isWritable: true },
-            { pubkey: poolPDA, isSigner: false, isWritable: true },
-            { pubkey: tokenVaultPDA, isSigner: false, isWritable: true },
-            { pubkey: purchaseHistoryPDA, isSigner: false, isWritable: true },
-            { pubkey: reentrancyGuardPDA, isSigner: false, isWritable: true },
-            { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-            {
-              pubkey: SystemProgram.programId,
-              isSigner: false,
-              isWritable: false,
-            },
-            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-          ],
-          data: dataBuffer,
-        });
+  const mintNFT = async (name: string, symbol: string, uri: string) => {
+    if (!program || !collectionMetadata || !wallet.publicKey) return;
 
-        // Adicionar instrução de compra à transação
-        transaction.add(purchaseIx);
+    try {
+      setLoading(true);
+      const nftMint = Keypair.generate();
+      const nftMetadata = Keypair.generate();
+      const nftTokenAccount = await getAssociatedTokenAddress(
+        nftMint.publicKey,
+        wallet.publicKey
+      );
+      const tx = await program.methods
+        .mintNft(name, symbol, uri)
+        .accounts({
+          payer: wallet.publicKey,
+          nftMint: nftMint.publicKey,
+          nftMetadata: nftMetadata.publicKey,
+          nftTokenAccount,
+          collectionMetadata: collectionMetadata.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        })
+        .signers([nftMint, nftMetadata])
+        .rpc();
 
-        console.log("Enviando transação...");
+      console.log("NFT mintado:", tx);
+      return { tx, nftMint: nftMint.publicKey, nftMetadata: nftMetadata.publicKey };
 
-        // Enviar e confirmar transação
-        const { blockhash } = await connection.getLatestBlockhash();
-        transaction.recentBlockhash = blockhash;
-        transaction.feePayer = wallet.publicKey;
+    } catch (error) {
+      console.error("Erro ao mintar NFT:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Assinar a transação
-        const signedTx = await wallet.signTransaction(transaction);
+  const mintNFTWithPayment = async (
+    name: string,
+    symbol: string,
+    uri: string,
+    paymentAmount: number,
+    paymentTokenMint: string
+  ) => {
+    if (!program || !collectionMetadata || !configAccount || !wallet.publicKey) return;
 
-        // Enviar a transação assinada
-        const txid = await connection.sendRawTransaction(signedTx.serialize());
-        console.log("Transação enviada:", txid);
+    try {
+      setLoading(true);
+      const nftMint = Keypair.generate();
+      const nftMetadata = Keypair.generate();
+      const nftTokenAccount = await getAssociatedTokenAddress(
+        nftMint.publicKey,
+        wallet.publicKey
+      );
+      const payerPaymentTokenAccount = await getAssociatedTokenAddress(
+        new PublicKey(paymentTokenMint),
+        wallet.publicKey
+      );
+      const tx = await program.methods
+        .mintNftWithPayment(
+          name,
+          symbol,
+          uri,
+          new BN(paymentAmount)
+        )
+        .accounts({
+          payer: wallet.publicKey,
+          nftMint: nftMint.publicKey,
+          nftMetadata: nftMetadata.publicKey,
+          nftTokenAccount,
+          collectionMetadata: collectionMetadata.publicKey,
+          paymentTokenMint: new PublicKey(paymentTokenMint),
+          payerPaymentTokenAccount,
+          config: configAccount.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        })
+        .signers([nftMint, nftMetadata])
+        .rpc();
 
-        // Aguardar confirmação
-        const confirmation = await connection.confirmTransaction(
-          txid,
-          "confirmed"
-        );
-        console.log("Confirmação:", confirmation);
+      console.log("NFT mintado com pagamento:", tx);
+      return { tx, nftMint: nftMint.publicKey, nftMetadata: nftMetadata.publicKey };
 
-        console.log("Compra realizada com sucesso!");
-        return txid;
-      } catch (error: any) {
-        console.error("Erro ao realizar compra:", error);
-        // Melhoria das mensagens de erro
-        if (
-          error.message &&
-          error.message.includes("undefined (reading 'size')")
-        ) {
-          throw new Error(
-            "Erro ao processar dados da transação. Formato inválido para o ID do item ou valor."
-          );
-        } else if (
-          error.message &&
-          error.message.includes("custom program error")
-        ) {
-          throw new Error(`Erro no contrato: ${error.message}`);
-        } else {
-          throw error;
-        }
-      }
-    },
-    [connection, wallet]
-  );
+    } catch (error) {
+      console.error("Erro ao mintar NFT com pagamento:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { purchase };
+  return { initializeCollection, setPaymentToken, mintNFT, mintNFTWithPayment };
 }

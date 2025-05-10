@@ -11,59 +11,15 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 1]);
-  const { publicKey, connected } = useWallet();
-  const { connection } = useConnection();
-  const [balance, setBalance] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const TOKEN_MINT = "FkrCkX4HfbRU1g5pbaU97nSZusQavmKwqNpEY1nBE9ti";
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!publicKey || !connected) {
-        setBalance(null);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const tokenMint = new PublicKey(TOKEN_MINT);
-        const tokenAccount = await getAssociatedTokenAddress(
-          tokenMint,
-          publicKey
-        );
-
-        try {
-          const tokenAccountInfo = await connection.getTokenAccountBalance(
-            tokenAccount
-          );
-          setBalance(tokenAccountInfo.value.uiAmount);
-        } catch (error) {
-          console.log("Token account may not exist yet:", error);
-          setBalance(0);
-        }
-      } catch (error) {
-        console.error("Error fetching token balance:", error);
-        setBalance(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBalance();
-    const intervalId = setInterval(fetchBalance, 15000);
-
-    return () => clearInterval(intervalId);
-  }, [publicKey, connection, connected]);
+  const { connected, publicKey } = useWallet();
+  const [balance, setBalance] = useState(0);
+  console.log(publicKey?.toBase58());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,7 +30,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Fechar o menu mobile quando a tela for redimensionada para desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768 && mobileMenuOpen) {
@@ -86,14 +41,12 @@ export function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, [mobileMenuOpen]);
 
-  // Bloquear o scroll quando o menu mobile estiver aberto
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-
     return () => {
       document.body.style.overflow = "";
     };
@@ -213,7 +166,7 @@ export function Header() {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  $xxx
+                  $ADR
                 </motion.span>
               </div>
             </Link>
@@ -278,7 +231,7 @@ export function Header() {
               variants={buttonVariants}
             >
               <Button className="text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6">
-                Buy token $xxx
+                Buy token $ADR
               </Button>
             </motion.div>
           </div>
@@ -498,7 +451,7 @@ export function Header() {
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                       </svg>
-                      Buy token $xxx
+                      Buy token $ADR
                     </Button>
                   </motion.div>
                 </motion.div>

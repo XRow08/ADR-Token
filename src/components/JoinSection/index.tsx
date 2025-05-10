@@ -21,12 +21,12 @@ export function JoinSection() {
                 Join the movement
               </h1>
               <p className="text-[#BDBDBD] text-xs sm:text-sm xl:text-[16px] mt-2">
-                With XXX Token, you're not just entering the crypto universe —
+                With ADR Token, you're not just entering the crypto universe —
                 Help transform Vila Cruzeiro with every token acquired
               </p>
             </div>
             <Button className="w-full sm:w-[290px] py-3 sm:h-[56px] text-sm sm:text-base">
-              Buy token $xxx
+              Buy token $ADR
             </Button>
           </div>
 

@@ -8,9 +8,9 @@ import { Header } from "@/components/Header";
 
 const boxData = [
   {
-    id: "XXX-premium",
-    title: "XXX prizes",
-    image: "/images/boxes/XXX-prizes.png",
+    id: "ADR-premium",
+    title: "ADR prizes",
+    image: "/images/boxes/ADR-prizes.png",
     price: 10.21,
   },
   {

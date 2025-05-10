@@ -50,7 +50,7 @@ export const Card2 = ({
         }}
       />
 
-      {/* Imagem do XXXiano versão desktop */}
+      {/* Imagem do Adriano versão desktop */}
       <motion.div
         className="absolute bottom-0 w-full hidden md:flex items-center justify-center"
         style={{ zIndex: 5 }}
@@ -61,8 +61,8 @@ export const Card2 = ({
         }}
       >
         <img
-          src="/animation/card2/img-XXXiano1.png"
-          alt="XXXiano"
+          src="/animation/card2/img-adriano1.png"
+          alt="Adriano"
           className="w-[315px] h-[309px] object-cover"
         />
       </motion.div>
@@ -119,7 +119,7 @@ export const Card2 = ({
         </motion.div>
       </div>
 
-      {/* Imagem do XXXiano versão mobile */}
+      {/* Imagem do Adriano versão mobile */}
       <motion.div
         className="absolute bottom-0 w-full flex items-center justify-center md:hidden"
         style={{ zIndex: 2 }}
@@ -130,8 +130,8 @@ export const Card2 = ({
         }}
       >
         <img
-          src="/animation/card2/img-XXXiano1.png"
-          alt="XXXiano"
+          src="/animation/card2/img-adriano1.png"
+          alt="Adriano"
           className="w-[240px] h-auto object-cover"
         />
       </motion.div>

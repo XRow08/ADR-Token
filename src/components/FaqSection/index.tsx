@@ -7,29 +7,29 @@ import { IoIosArrowDown } from "react-icons/io";
 
 const faqData = [
   {
-    question: "What is the tokenomics of the $xxx token?",
+    question: "What is the tokenomics of the $ADR token?",
     answer:
-      "The $xxx token is a utility token for the Vila Cruzeiro community. It has a fixed supply of 1 billion tokens, with 30% allocated to community initiatives, 25% for platform development, 20% for the team and advisors (vested over 3 years), 15% for marketing and partnerships, and 10% for liquidity provisioning.",
+      "The $ADR token is a utility token for the Vila Cruzeiro community. It has a fixed supply of 1 billion tokens, with 30% allocated to community initiatives, 25% for platform development, 20% for the team and advisors (vested over 3 years), 15% for marketing and partnerships, and 10% for liquidity provisioning.",
   },
   {
-    question: "How can I use XXX Tokens on the platform?",
+    question: "How can I use ADR Tokens on the platform?",
     answer:
-      "XXX Tokens can be used to purchase mystery boxes with chances to win exclusive items, access premium features, participate in community governance decisions, and receive special benefits within the platform ecosystem.",
+      "ADR Tokens can be used to purchase mystery boxes with chances to win exclusive items, access premium features, participate in community governance decisions, and receive special benefits within the platform ecosystem.",
   },
   {
-    question: "Is XXX Token available on multiple blockchains?",
+    question: "Is ADR Token available on multiple blockchains?",
     answer:
-      "Currently, XXX Token is available on the Solana blockchain. We chose Solana for its fast transaction speeds, low fees, and environmental efficiency. We may explore cross-chain compatibility in the future based on community needs.",
+      "Currently, ADR Token is available on the Solana blockchain. We chose Solana for its fast transaction speeds, low fees, and environmental efficiency. We may explore cross-chain compatibility in the future based on community needs.",
   },
   {
-    question: "How do I get started with XXX Tokens?",
+    question: "How do I get started with ADR Tokens?",
     answer:
-      "To get started, connect your Solana wallet (like Phantom or Solflare), purchase XXX Tokens either directly through our platform or from supported exchanges, and then use them to access platform features like mystery boxes.",
+      "To get started, connect your Solana wallet (like Phantom or Solflare), purchase ADR Tokens either directly through our platform or from supported exchanges, and then use them to access platform features like mystery boxes.",
   },
   {
-    question: "Are there any fees for purchasing or using XXX Tokens?",
+    question: "Are there any fees for purchasing or using ADR Tokens?",
     answer:
-      "When purchasing XXX Tokens, you'll only pay the standard Solana network transaction fees, which are typically less than $0.01. There are no additional platform fees for holding or using your tokens within our ecosystem.",
+      "When purchasing ADR Tokens, you'll only pay the standard Solana network transaction fees, which are typically less than $0.01. There are no additional platform fees for holding or using your tokens within our ecosystem.",
   },
 ];
 
@@ -121,7 +121,7 @@ export function FaqSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="w-full sm:w-auto"
           >
-            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">Buy token $xxx</Button>
+            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">Buy token $ADR</Button>
           </motion.div>
         </div>
 

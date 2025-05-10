@@ -1,3 +1,4 @@
+"use client";
 import { useRef, useEffect, useState } from "react";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { Button } from "../Button";
@@ -8,6 +9,7 @@ import ItemCard from "../ItemCard.tsx";
 import { ScrollAnimation } from "../ScrollAnimation";
 import { motion, AnimatePresence } from "framer-motion";
 import { itensData } from "@/constants";
+import { usePurchase } from "@/hooks/usePurchase";
 
 export function BoxSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +22,11 @@ export function BoxSection() {
   >(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const { initializeCollection } = usePurchase();
+
+  useEffect(() => {
+    initializeCollection();
+  }, []);
 
   const carouselItems = [];
   for (let i = 0; i < 30; i++) {

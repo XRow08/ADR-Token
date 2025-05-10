@@ -22,7 +22,7 @@ export const ImpactSection = () => {
           <p className="xl:leading-[23.4px] text-center text-[#B4B4B4]">
             The advancement of blockchain technology and cryptocurrencies goes beyond
             finance, creating opportunities for social impact initiatives. Tokens
-            like the XXXiano Token combine financial potential and social transformation,
+            like the Adriano Token combine financial potential and social transformation,
             creating projects where economic success drives real benefits for communities.
           </p>
         </ScrollAnimation>

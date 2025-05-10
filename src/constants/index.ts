@@ -1,7 +1,7 @@
 export const itensData = [
   {
-    id: "XXX-premium",
-    title: "XXX prêmios",
+    id: "ADR-premium",
+    title: "ADR prêmios",
     image: "/images/itens/camisa.png",
     price: 10.21,
     probability: 10,

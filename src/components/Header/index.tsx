@@ -13,6 +13,9 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { usePurchase } from "@/hooks/usePurchase";
+import { BoxIcon } from "../Icons/BoxIcon";
+import { HistoricIcon } from "../Icons/HistoricIcon";
+import { BurnTicker } from "../BurnTicker";
 
 const WalletMultiButton = dynamic(
   () =>
@@ -113,7 +116,6 @@ export function Header() {
     open: { opacity: 1, y: 0, x: 0, transition: { duration: 0.4 } },
   };
 
-  // Componente customizado para exibir saldo
   const BalanceDisplay = () => {
     if (!connected) return null;
 
@@ -149,66 +151,71 @@ export function Header() {
         }}
       >
         <div className="max-w-[1280px] w-full flex items-center justify-between px-6 md:px-0">
-          <motion.div
-            className="flex items-center gap-1 md:gap-2 cursor-pointer"
-            initial="hidden"
-            animate="visible"
-            variants={logoVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Link href="/">
-              <div className="flex items-center gap-1 md:gap-2">
-                <motion.div
-                  className="w-8 h-8 md:w-auto md:h-auto"
-                  whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <LogoIcon />
-                </motion.div>
-                <motion.span
-                  className="text-white text-base sm:text-lg xl:text-[25px] font-medium"
-                  whileHover={{
-                    color: "#28D939",
-                    transition: { duration: 0.2 },
-                  }}
-                >
-                  $ADR
-                </motion.span>
-              </div>
-            </Link>
-          </motion.div>
+          <div className="flex items-center gap-4">
+            <motion.div
+              className="flex items-center gap-1 md:gap-2 cursor-pointer"
+              initial="hidden"
+              animate="visible"
+              variants={logoVariants}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link href="/">
+                <div className="flex items-center gap-1 md:gap-2">
+                  <motion.div
+                    className="w-8 h-8 md:w-auto md:h-auto"
+                    whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <LogoIcon />
+                  </motion.div>
+                  <motion.span
+                    className="text-white text-base sm:text-lg xl:text-[25px] font-medium"
+                    whileHover={{
+                      color: "#28D939",
+                      transition: { duration: 0.2 },
+                    }}
+                  >
+                    $ADR
+                  </motion.span>
+                </div>
+              </Link>
+            </motion.div>
 
-          {/* Menu desktop */}
+            <div className="hidden lg:flex items-center gap-4 ml-10">
+              <motion.nav
+                className="flex items-center gap-2"
+                initial="hidden"
+                animate="visible"
+                variants={buttonVariants}
+              >
+                <Link
+                  href="/boxes"
+                  className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
+                >
+                  <BoxIcon />
+                  Boxes
+                </Link>
+              </motion.nav>
+
+              <motion.nav
+                className="flex items-center gap-6"
+                initial="hidden"
+                animate="visible"
+                variants={buttonVariants}
+              >
+                <Link
+                  href="/transactions"
+                  className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
+                >
+                  <HistoricIcon />
+                  Historic
+                </Link>
+              </motion.nav>
+            </div>
+          </div>
+
           <div className="hidden md:flex items-center gap-4">
-            <motion.nav
-              className="flex items-center gap-6"
-              initial="hidden"
-              animate="visible"
-              variants={buttonVariants}
-            >
-              <Link
-                href="/boxes"
-                className="text-white hover:text-[#28D939] transition-colors"
-              >
-                Boxes
-              </Link>
-            </motion.nav>
-
-            <motion.nav
-              className="flex items-center gap-6"
-              initial="hidden"
-              animate="visible"
-              variants={buttonVariants}
-            >
-              <Link
-                href="/transactions"
-                className="text-white hover:text-[#28D939] transition-colors"
-              >
-                Transactions
-              </Link>
-            </motion.nav>
-
             <motion.div
               initial="hidden"
               animate="visible"
@@ -232,8 +239,6 @@ export function Header() {
               </Button>
             </motion.div>
           </div>
-
-          {/* Botão menu mobile */}
           <motion.div
             className="md:hidden flex items-center z-50"
             initial="hidden"
@@ -284,8 +289,8 @@ export function Header() {
           </motion.div>
         </div>
       </motion.header>
+      <BurnTicker />
 
-      {/* Menu mobile */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -334,25 +339,7 @@ export function Header() {
                       className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-3"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <motion.div
-                        className="w-8 h-8 rounded-full bg-[#222222] flex items-center justify-center"
-                        whileHover={{ scale: 1.1, backgroundColor: "#28D939" }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                      </motion.div>
+                      <BoxIcon />
                       Boxes
                     </Link>
                   </motion.div>
@@ -360,28 +347,11 @@ export function Header() {
                   <motion.div variants={menuItemVariants}>
                     <Link
                       href="/transactions"
-                      className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-3"
+                      className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-4"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <motion.div
-                        className="w-8 h-8 rounded-full bg-[#222222] flex items-center justify-center"
-                        whileHover={{ scale: 1.1, backgroundColor: "#28D939" }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
-                          <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
-                        </svg>
-                      </motion.div>
-                      Transações
+                      <HistoricIcon />
+                      Historic
                     </Link>
                   </motion.div>
                 </motion.div>
@@ -390,7 +360,10 @@ export function Header() {
                   <motion.div variants={menuItemVariants}>
                     {connected && <BalanceDisplay />}
 
-                    <WalletMultiButton className="wallet-adapter-button-trigger !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium w-full py-3 rounded-lg border-none hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mt-2" />
+                    <WalletMultiButton
+                      style={{ width: "100%" }}
+                      className="mt-4 wallet-adapter-button-trigger !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium w-full py-3 rounded-lg border-none hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    />
                   </motion.div>
 
                   <motion.div variants={menuItemVariants}>

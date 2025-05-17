@@ -5,10 +5,10 @@ import { ScrollAnimation } from "@/components/ScrollAnimation";
 
 export const HeroSection = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-start md:pt-[80px] mt-[80px] md:mt-0 bg-[url('/images/home_bg.webp')] max-w-[1440px] bg-cover bg-center bg-no-repeat">
+    <div className="w-full min-h-screen flex flex-col items-center justify-start md:pt-[80px] pt-[80px] md:mt-0 bg-[url('/images/home_bg.webp')] max-w-[1440px] bg-cover bg-center bg-no-repeat">
       <ScrollAnimation type="fade" direction="down" duration={0.8} delay={0.2}>
         <h1 className="text-[#EEE] text-[36px] xl:text-[56px] font-semibold w-full text-center leading-[40px] md:leading-[61.6px]">
-          The only official <br />{" "}
+          The official <br />{" "}
           <span className="bg-gradient-to-r from-[#FFF7A8] to-[#FFEB28] font-black bg-clip-text text-transparent">
             Adriano Imperador
           </span>{" "}

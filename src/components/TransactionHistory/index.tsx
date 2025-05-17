@@ -23,49 +23,49 @@ export function TransactionHistory() {
   const transactions: Transaction[] = [
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Error",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Processing...",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Processing...",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Brazil Jersey",
+      name: "Soccer Jersey",
       value: 123.0,
       status: "Processing...",
       date: "03/03/2024 12:02:01",
@@ -105,6 +105,7 @@ export function TransactionHistory() {
   return (
     <section className="w-full bg-[#0F0F0F] min-h-screen ">
       <Header />
+
       <div className="w-full max-w-[1280px] mx-auto px-4 py-6 pt-20">
         <motion.div
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4"
@@ -112,9 +113,7 @@ export function TransactionHistory() {
           initial="hidden"
           animate="visible"
         >
-          <h1 className="text-2xl font-bold text-white">
-            Transaction History
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Transaction History</h1>
 
           <button
             onClick={() => setActiveTab("recent")}

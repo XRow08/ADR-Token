@@ -22,11 +22,7 @@ export function BoxSection() {
   >(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const { initializeCollection } = usePurchase();
-
-  useEffect(() => {
-    initializeCollection();
-  }, []);
+  const { onMint } = usePurchase();
 
   const carouselItems = [];
   for (let i = 0; i < 30; i++) {
@@ -42,12 +38,12 @@ export function BoxSection() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
     };
-    
+
     checkMobile();
-    
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const animate = () => {
@@ -146,9 +142,9 @@ export function BoxSection() {
                 <motion.div
                   key={`item-${index}`}
                   className="flex-shrink-0 bg-fill bg-center bg-no-repeat rounded-md"
-                  style={{ 
-                    width: `${itemWidth * (isMobile ? 0.8 : 1)}px`, 
-                    height: `${itemWidth * (isMobile ? 0.8 : 1)}px` 
+                  style={{
+                    width: `${itemWidth * (isMobile ? 0.8 : 1)}px`,
+                    height: `${itemWidth * (isMobile ? 0.8 : 1)}px`,
                   }}
                   whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
                 >
@@ -225,24 +221,34 @@ export function BoxSection() {
                   <span className="font-bold text-xl sm:text-2xl">100.00</span>
                 </motion.div>
                 <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                  <motion.div whileHover={{ scale: 1.03 }} className="w-full sm:w-auto">
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    className="w-full sm:w-auto"
+                  >
                     <Button
                       className="w-full sm:w-[209px] h-[44px] sm:h-[52px]"
                       variant="secondary"
                       onClick={handlePurchaseSimulation}
                     >
                       <SimulationIcon className="w-5 h-5" />
-                      <span className="ml-1 text-sm sm:text-base">Simulation</span>
+                      <span className="ml-1 text-sm sm:text-base">
+                        Simulation
+                      </span>
                     </Button>
                   </motion.div>
-                  <motion.div whileHover={{ scale: 1.03 }} className="w-full sm:w-auto">
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    className="w-full sm:w-auto"
+                  >
                     <Button
                       className="w-full sm:w-[209px] h-[44px] sm:h-[52px]"
                       variant="primary"
-                      onClick={handlePurchaseSimulation}
+                      onClick={() => onMint(10)}
                     >
                       <PurchaseIcon className="w-5 h-5" />
-                      <span className="ml-1 text-sm sm:text-base">Purchase</span>
+                      <span className="ml-1 text-sm sm:text-base">
+                        Purchase
+                      </span>
                     </Button>
                   </motion.div>
                 </div>

@@ -8,18 +8,82 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
+import { PAYMENT_TOKEN_MINT } from "@/constants";
+
+const SOLANA_RPC =
+  process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 1]);
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, connect, connecting, wallet } = useWallet();
   const [balance, setBalance] = useState(0);
-  console.log(publicKey?.toBase58());
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Função segura para conectar
+  const handleConnect = useCallback(async () => {
+    if (!connected && !connecting && wallet) {
+      try {
+        await connect();
+      } catch (error) {
+        console.error("Erro ao conectar carteira:", error);
+      }
+    } else if (!wallet) {
+      console.log("Por favor, selecione uma carteira primeiro");
+      // Aqui você pode adicionar uma notificação ao usuário para selecionar uma carteira
+    }
+  }, [connected, connecting, wallet, connect]);
+
+  // Helper function to truncate wallet address
+  const truncateAddress = (address: string) => {
+    if (address.length <= 8) return address;
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
+  // Fetch token balance when wallet connects
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!connected || !publicKey) return;
+
+      try {
+        setIsLoading(true);
+
+        const connection = new Connection(SOLANA_RPC, "confirmed");
+        const tokenMint = new PublicKey(PAYMENT_TOKEN_MINT);
+
+        const tokenAccount = await getAssociatedTokenAddress(
+          tokenMint,
+          publicKey
+        );
+
+        try {
+          const tokenAccountInfo = await connection.getTokenAccountBalance(
+            tokenAccount
+          );
+          setBalance(
+            parseFloat(tokenAccountInfo.value.uiAmount?.toString() || "0")
+          );
+        } catch (err) {
+          console.log("Token account may not exist yet:", err);
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching token balance:", error);
+        setBalance(0);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, [connected, publicKey]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,30 +164,6 @@ export function Header() {
     closed: { rotate: 0, translateY: 8, width: 20, x: 2 },
     open: { rotate: -45, translateY: 0, width: 20, x: 0 },
   };
-
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      clipPath: "circle(0% at calc(100% - 28px) 28px)",
-      transition: {
-        duration: 0.5,
-        ease: [0.22, 1, 0.36, 1],
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-    open: {
-      opacity: 1,
-      clipPath: "circle(150% at calc(100% - 28px) 28px)",
-      transition: {
-        duration: 0.7,
-        ease: [0.22, 1, 0.36, 1],
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
   const menuItemVariants = {
     closed: { opacity: 0, y: -10, x: 20 },
     open: { opacity: 1, y: 0, x: 0, transition: { duration: 0.4 } },
@@ -209,15 +249,30 @@ export function Header() {
             >
               <Button
                 variant="secondary"
+                onClick={handleConnect}
                 className="text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6"
               >
                 {connected ? (
                   <div className="flex items-center gap-2">
                     <LogoIcon className="w-4 h-4" />
-                    {balance?.toLocaleString("en-US", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
+                    {isLoading ? (
+                      <span className="w-8 h-4 bg-gray-600 animate-pulse rounded-sm"></span>
+                    ) : (
+                      <>
+                        {balance?.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        })}
+                        <span className="text-xs text-gray-400 hidden sm:inline">
+                          ({publicKey && truncateAddress(publicKey.toBase58())})
+                        </span>
+                      </>
+                    )}
+                  </div>
+                ) : connecting ? (
+                  <div className="flex items-center gap-2">
+                    <span className="animate-spin h-4 w-4 border-t-2 border-white rounded-full"></span>
+                    Connecting...
                   </div>
                 ) : (
                   "Connect wallet"
@@ -394,15 +449,32 @@ export function Header() {
                     <Button
                       variant="secondary"
                       className="w-full py-3 flex items-center justify-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={handleConnect}
                     >
                       {connected ? (
                         <div className="flex items-center gap-2 justify-center">
                           <LogoIcon className="w-4 h-4" />
-                          {balance?.toLocaleString("en-US", {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
+                          {isLoading ? (
+                            <span className="w-8 h-4 bg-gray-600 animate-pulse rounded-sm"></span>
+                          ) : (
+                            <>
+                              {balance?.toLocaleString("en-US", {
+                                maximumFractionDigits: 2,
+                                minimumFractionDigits: 2,
+                              })}
+                              <span className="text-xs text-gray-400 ml-1">
+                                (
+                                {publicKey &&
+                                  truncateAddress(publicKey.toBase58())}
+                                )
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      ) : connecting ? (
+                        <div className="flex items-center gap-2">
+                          <span className="animate-spin h-4 w-4 border-t-2 border-white rounded-full"></span>
+                          Connecting...
                         </div>
                       ) : (
                         <>

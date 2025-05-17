@@ -8,10 +8,10 @@ import { PurchaseIcon } from "../Icons/PurchaseIcon";
 import ItemCard from "../ItemCard.tsx";
 import { ScrollAnimation } from "../ScrollAnimation";
 import { motion, AnimatePresence } from "framer-motion";
-import { itensData } from "@/constants";
+import { cryptoData, itensData } from "@/constants";
 import { usePurchase } from "@/hooks/usePurchase";
 
-export function BoxSection() {
+export function BoxSection({ boxName }: { boxName: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
@@ -24,9 +24,11 @@ export function BoxSection() {
   const [isMobile, setIsMobile] = useState(false);
   const { onMint } = usePurchase();
 
+  const itens = boxName === "cryptos" ? cryptoData : itensData;
+
   const carouselItems = [];
   for (let i = 0; i < 30; i++) {
-    const item = itensData[i % itensData.length];
+    const item = itens[i % itens.length];
     carouselItems.push(item);
   }
 
@@ -54,7 +56,7 @@ export function BoxSection() {
       currentTransform.replace("translateX(", "").replace("px)", "")
     );
     position -= speed;
-    const resetPoint = -((itemWidth + itemGap) * itensData.length);
+    const resetPoint = -((itemWidth + itemGap) * itens.length);
     if (position <= resetPoint) {
       position = 0;
     }
@@ -78,8 +80,8 @@ export function BoxSection() {
     setShowModal(true);
     setProcessingStage("processing");
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * itensData.length);
-      setSelectedItem(itensData[randomIndex]);
+      const randomIndex = Math.floor(Math.random() * itens.length);
+      setSelectedItem(itens[randomIndex]);
       setProcessingStage("result");
     }, 3000);
   };
@@ -88,8 +90,8 @@ export function BoxSection() {
     setShowModal(true);
     setProcessingStage("processing");
     await onMint(1);
-    const randomIndex = Math.floor(Math.random() * itensData.length);
-    setSelectedItem(itensData[randomIndex]);
+    const randomIndex = Math.floor(Math.random() * itens.length);
+    setSelectedItem(itens[randomIndex]);
     setProcessingStage("result");
   };
 
@@ -98,6 +100,11 @@ export function BoxSection() {
     setProcessingStage(null);
     setSelectedItem(null);
   };
+
+  const boxImage =
+    boxName === "cryptos"
+      ? "/images/boxes/cripto.png"
+      : "/images/boxes/super-prize.png";
 
   return (
     <>
@@ -136,12 +143,9 @@ export function BoxSection() {
             ref={containerRef}
             className="relative w-full h-full overflow-hidden z-10"
           >
-            {/* Gradiente de fade à esquerda */}
             <div className="absolute left-0 top-0 bottom-0 z-20 w-[15%] sm:w-[20%] md:w-[25%] pointer-events-none">
               <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent"></div>
             </div>
-
-            {/* Itens do carrossel */}
             <div
               ref={carouselRef}
               className="absolute flex items-center h-full"
@@ -150,7 +154,7 @@ export function BoxSection() {
               {carouselItems.map((item, index) => (
                 <motion.div
                   key={`item-${index}`}
-                  className="flex-shrink-0 bg-fill bg-center bg-no-repeat rounded-md"
+                  className="flex-shrink-0 bg-cover bg-center bg-no-repeat rounded-md"
                   style={{
                     width: `${itemWidth * (isMobile ? 0.8 : 1)}px`,
                     height: `${itemWidth * (isMobile ? 0.8 : 1)}px`,
@@ -162,7 +166,7 @@ export function BoxSection() {
                     alt={item.title}
                     width={100000}
                     height={100000}
-                    className="w-full h-full object-fill"
+                    className="w-full h-full object-contain"
                   />
                 </motion.div>
               ))}
@@ -191,7 +195,7 @@ export function BoxSection() {
                   className="w-24 h-16 sm:w-32 sm:h-auto"
                 >
                   <Image
-                    src="/images/random-box.png"
+                    src={boxImage}
                     alt="random"
                     width={130}
                     height={88}
@@ -212,7 +216,7 @@ export function BoxSection() {
                       },
                     }}
                   >
-                    Box!
+                    {boxName === "cryptos" ? "Cryptos" : "Super prizes"}
                   </motion.h1>
                   <p className="text-xs sm:text-sm text-[#B4B4B4] max-w-[300px] sm:max-w-none">
                     We value the importance of solidarity and empathy, offering
@@ -272,7 +276,7 @@ export function BoxSection() {
             duration={0.7}
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mt-10">
-              {itensData.map((box, index) => (
+              {itens.map((box, index) => (
                 <motion.div
                   key={box.id + index}
                   whileHover={{ scale: 1.05 }}
@@ -304,26 +308,6 @@ export function BoxSection() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
             >
-              <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-white"
-                onClick={closeModal}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-
               {processingStage === "processing" && (
                 <div className="flex flex-col items-center justify-center py-6 sm:py-10">
                   <div className="relative w-20 h-20 sm:w-24 sm:h-24 mb-6">
@@ -373,7 +357,7 @@ export function BoxSection() {
                           height={160}
                           className="w-full h-full object-fill"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0F0F0F]/30"></div>
+                        <div className="absolute inset-0"></div>
                       </div>
                     </div>
                   </motion.div>
@@ -400,13 +384,6 @@ export function BoxSection() {
                     <h4 className="text-lg sm:text-xl font-semibold mb-1">
                       {selectedItem.title}
                     </h4>
-                    <p className="text-[#B4B4B4] text-sm sm:text-base mb-3">
-                      Value:{" "}
-                      {selectedItem.price.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      })}
-                    </p>
 
                     <div className="flex justify-center mt-4">
                       <Button

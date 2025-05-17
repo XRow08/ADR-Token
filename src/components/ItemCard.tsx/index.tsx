@@ -4,13 +4,7 @@ import Image from "next/image";
 import { LogoIcon } from "../Icons/LogoIcon";
 
 interface ItemCardProps {
-  item: {
-    id: string;
-    title: string;
-    image: string;
-    price: number;
-    probability?: number;
-  };
+  item: any;
 }
 
 export default function ItemCard({ item }: ItemCardProps) {
@@ -26,18 +20,9 @@ export default function ItemCard({ item }: ItemCardProps) {
       </div>
       <div className="flex gap-2 p-4 justify-between">
         <div className="flex flex-col w-full gap-2">
-          <h3 className="text-lg bg-gradient-to-r from-[#FFF7A8] to-[#FFEB28] bg-clip-text text-transparent font-bold mb-2">
+          <h3 className="text-lg bg-gradient-to-r from-[#FFF7A8] to-[#FFEB28] bg-clip-text text-transparent font-bold">
             {item.title}
           </h3>
-          <div className="flex items-center w-full justify-between">
-            <div className="flex items-center bg-[#222222] rounded-lg px-2 py-1 gap-2 w-min">
-              <LogoIcon className="w-5 h-6" />
-              <span className="font-bold">{item.price}</span>
-            </div>
-            <p className="flex items-center bg-[#222222] rounded-lg px-2 py-1 gap-2 w-min">
-              {item.probability}%
-            </p>
-          </div>
         </div>
       </div>
     </div>

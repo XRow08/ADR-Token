@@ -205,7 +205,7 @@ export function Header() {
                 href="/transactions"
                 className="text-white hover:text-[#28D939] transition-colors"
               >
-                Transações
+                Transactions
               </Link>
             </motion.nav>
 

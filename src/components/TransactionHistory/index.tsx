@@ -11,7 +11,7 @@ type Transaction = {
   id: string;
   name: string;
   value: number;
-  status: "Concluído" | "Error" | "Processando...";
+  status: "Completed" | "Error" | "Processing...";
   date: string;
 };
 
@@ -23,51 +23,51 @@ export function TransactionHistory() {
   const transactions: Transaction[] = [
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Concluído",
+      status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Concluído",
+      status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
       status: "Error",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Processando...",
+      status: "Processing...",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Concluído",
+      status: "Completed",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Processando...",
+      status: "Processing...",
       date: "03/03/2024 12:02:01",
     },
     {
       id: "0sda0da0sdx...",
-      name: "Camisa do Brasil",
+      name: "Brazil Jersey",
       value: 123.0,
-      status: "Processando...",
+      status: "Processing...",
       date: "03/03/2024 12:02:01",
     },
   ];
@@ -113,14 +113,14 @@ export function TransactionHistory() {
           animate="visible"
         >
           <h1 className="text-2xl font-bold text-white">
-            Histórico de transações
+            Transaction History
           </h1>
 
           <button
             onClick={() => setActiveTab("recent")}
             className="px-4 py-2 rounded-md text-sm bg-[#1A1A1A] text-gray-400 hover:bg-[#222222] transition-colors"
           >
-            Recentes
+            Recent
             <span className="ml-2">→</span>
           </button>
         </motion.div>
@@ -132,13 +132,13 @@ export function TransactionHistory() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {/* Cabeçalho da tabela - visível apenas em desktop */}
+          {/* Table header - visible only on desktop */}
           <div className="hidden sm:grid grid-cols-5 px-5 py-3 bg-[#1A1A1A] text-gray-400 text-sm font-medium">
-            <div className="col-span-1">Nome</div>
+            <div className="col-span-1">Name</div>
             <div className="col-span-1">ID</div>
-            <div className="col-span-1">Valor</div>
+            <div className="col-span-1">Value</div>
             <div className="col-span-1">Status</div>
-            <div className="col-span-1">Data</div>
+            <div className="col-span-1">Date</div>
           </div>
 
           <div>
@@ -149,7 +149,7 @@ export function TransactionHistory() {
                 variants={itemVariants}
                 whileHover={{ backgroundColor: "rgba(26,26,26,0.5)" }}
               >
-                {/* Layout desktop */}
+                {/* Desktop layout */}
                 <div className="hidden sm:grid grid-cols-5 px-5 py-4 text-white">
                   <div className="col-span-1 flex items-center gap-2">
                     <ShirtIcon className="w-6 h-6 flex-shrink-0" />
@@ -190,7 +190,7 @@ export function TransactionHistory() {
                   <div className="col-span-1">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs ${
-                        transaction.status === "Concluído"
+                        transaction.status === "Completed"
                           ? "bg-green-900/30 text-green-500"
                           : transaction.status === "Error"
                           ? "bg-red-900/30 text-red-500"
@@ -205,7 +205,7 @@ export function TransactionHistory() {
                   </div>
                 </div>
 
-                {/* Layout mobile */}
+                {/* Mobile layout */}
                 <div className="sm:hidden p-4 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -216,7 +216,7 @@ export function TransactionHistory() {
                     </div>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs ${
-                        transaction.status === "Concluído"
+                        transaction.status === "Completed"
                           ? "bg-green-900/30 text-green-500"
                           : transaction.status === "Error"
                           ? "bg-red-900/30 text-red-500"

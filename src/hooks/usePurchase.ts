@@ -119,8 +119,7 @@ export function usePurchase() {
       await getBalance();
       return result;
     } catch (error) {
-      console.error("Erro ao processar a transação:", error);
-      toast.error("Transaction failed");
+      console.error("Error processing transaction:", error);
       throw error;
     }
   }

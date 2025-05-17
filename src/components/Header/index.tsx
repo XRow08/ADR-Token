@@ -8,82 +8,26 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
-import { PAYMENT_TOKEN_MINT } from "@/constants";
+import dynamic from "next/dynamic";
+import "@solana/wallet-adapter-react-ui/styles.css";
+import { usePurchase } from "@/hooks/usePurchase";
 
-const SOLANA_RPC =
-  process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
+const WalletMultiButton = dynamic(
+  () =>
+    import("@solana/wallet-adapter-react-ui").then(
+      (mod) => mod.WalletMultiButton
+    ),
+  { ssr: false }
+);
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 1]);
-  const { connected, publicKey, connect, connecting, wallet } = useWallet();
-  const [balance, setBalance] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Função segura para conectar
-  const handleConnect = useCallback(async () => {
-    if (!connected && !connecting && wallet) {
-      try {
-        await connect();
-      } catch (error) {
-        console.error("Erro ao conectar carteira:", error);
-      }
-    } else if (!wallet) {
-      console.log("Por favor, selecione uma carteira primeiro");
-      // Aqui você pode adicionar uma notificação ao usuário para selecionar uma carteira
-    }
-  }, [connected, connecting, wallet, connect]);
-
-  // Helper function to truncate wallet address
-  const truncateAddress = (address: string) => {
-    if (address.length <= 8) return address;
-    return `${address.slice(0, 4)}...${address.slice(-4)}`;
-  };
-
-  // Fetch token balance when wallet connects
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!connected || !publicKey) return;
-
-      try {
-        setIsLoading(true);
-
-        const connection = new Connection(SOLANA_RPC, "confirmed");
-        const tokenMint = new PublicKey(PAYMENT_TOKEN_MINT);
-
-        const tokenAccount = await getAssociatedTokenAddress(
-          tokenMint,
-          publicKey
-        );
-
-        try {
-          const tokenAccountInfo = await connection.getTokenAccountBalance(
-            tokenAccount
-          );
-          setBalance(
-            parseFloat(tokenAccountInfo.value.uiAmount?.toString() || "0")
-          );
-        } catch (err) {
-          console.log("Token account may not exist yet:", err);
-          setBalance(0);
-        }
-      } catch (error) {
-        console.error("Error fetching token balance:", error);
-        setBalance(0);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBalance();
-  }, [connected, publicKey]);
+  const { balance, isLoading, connected } = usePurchase();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -169,6 +113,29 @@ export function Header() {
     open: { opacity: 1, y: 0, x: 0, transition: { duration: 0.4 } },
   };
 
+  // Componente customizado para exibir saldo
+  const BalanceDisplay = () => {
+    if (!connected) return null;
+
+    return (
+      <div className="flex items-center gap-2 text-sm mr-2">
+        {isLoading ? (
+          <span className="w-8 h-4 bg-gray-600 animate-pulse rounded-sm"></span>
+        ) : (
+          <div className="flex items-center text-white">
+            <LogoIcon className="w-4 h-4 mr-2" />
+            <span>
+              {balance.toLocaleString("en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              })}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <motion.header
@@ -246,38 +213,13 @@ export function Header() {
               initial="hidden"
               animate="visible"
               variants={buttonVariants}
+              className="flex items-center gap-2"
             >
-              <Button
-                variant="secondary"
-                onClick={handleConnect}
-                className="text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6"
-              >
-                {connected ? (
-                  <div className="flex items-center gap-2">
-                    <LogoIcon className="w-4 h-4" />
-                    {isLoading ? (
-                      <span className="w-8 h-4 bg-gray-600 animate-pulse rounded-sm"></span>
-                    ) : (
-                      <>
-                        {balance?.toLocaleString("en-US", {
-                          maximumFractionDigits: 2,
-                          minimumFractionDigits: 2,
-                        })}
-                        <span className="text-xs text-gray-400 hidden sm:inline">
-                          ({publicKey && truncateAddress(publicKey.toBase58())})
-                        </span>
-                      </>
-                    )}
-                  </div>
-                ) : connecting ? (
-                  <div className="flex items-center gap-2">
-                    <span className="animate-spin h-4 w-4 border-t-2 border-white rounded-full"></span>
-                    Connecting...
-                  </div>
-                ) : (
-                  "Connect wallet"
-                )}
-              </Button>
+              {connected && <BalanceDisplay />}
+
+              <div className="wallet-adapter-dropdown">
+                <WalletMultiButton className=" !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6 rounded-lg border-none" />
+              </div>
             </motion.div>
 
             <motion.div
@@ -446,63 +388,9 @@ export function Header() {
 
                 <motion.div className="flex flex-col gap-4 mt-4">
                   <motion.div variants={menuItemVariants}>
-                    <Button
-                      variant="secondary"
-                      className="w-full py-3 flex items-center justify-center gap-2"
-                      onClick={handleConnect}
-                    >
-                      {connected ? (
-                        <div className="flex items-center gap-2 justify-center">
-                          <LogoIcon className="w-4 h-4" />
-                          {isLoading ? (
-                            <span className="w-8 h-4 bg-gray-600 animate-pulse rounded-sm"></span>
-                          ) : (
-                            <>
-                              {balance?.toLocaleString("en-US", {
-                                maximumFractionDigits: 2,
-                                minimumFractionDigits: 2,
-                              })}
-                              <span className="text-xs text-gray-400 ml-1">
-                                (
-                                {publicKey &&
-                                  truncateAddress(publicKey.toBase58())}
-                                )
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      ) : connecting ? (
-                        <div className="flex items-center gap-2">
-                          <span className="animate-spin h-4 w-4 border-t-2 border-white rounded-full"></span>
-                          Connecting...
-                        </div>
-                      ) : (
-                        <>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect
-                              x="2"
-                              y="4"
-                              width="20"
-                              height="16"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
-                            <path d="M17.3 12.3a6 6 0 0 0-10.6 0"></path>
-                          </svg>
-                          Connect wallet
-                        </>
-                      )}
-                    </Button>
+                    {connected && <BalanceDisplay />}
+
+                    <WalletMultiButton className="wallet-adapter-button-trigger !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium w-full py-3 rounded-lg border-none hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mt-2" />
                   </motion.div>
 
                   <motion.div variants={menuItemVariants}>

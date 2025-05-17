@@ -84,6 +84,15 @@ export function BoxSection() {
     }, 3000);
   };
 
+  const handlePurchase = async () => {
+    setShowModal(true);
+    setProcessingStage("processing");
+    await onMint(1);
+    const randomIndex = Math.floor(Math.random() * itensData.length);
+    setSelectedItem(itensData[randomIndex]);
+    setProcessingStage("result");
+  };
+
   const closeModal = () => {
     setShowModal(false);
     setProcessingStage(null);
@@ -243,7 +252,7 @@ export function BoxSection() {
                     <Button
                       className="w-full sm:w-[209px] h-[44px] sm:h-[52px]"
                       variant="primary"
-                      onClick={() => onMint(10)}
+                      onClick={handlePurchase}
                     >
                       <PurchaseIcon className="w-5 h-5" />
                       <span className="ml-1 text-sm sm:text-base">

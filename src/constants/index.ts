@@ -1,7 +1,7 @@
 export const COLLECTION_NAME = "ADR Collection";
 export const COLLECTION_SYMBOL = "ADR";
 export const COLLECTION_URI = "https://your-collection-uri.com";
-export const PROGRAM_ID = "GKf6NkHokaNXcov4kgPqftFrd9QfJMcgRwaCVSWc5yTz";
+export const PROGRAM_ID = "9cDdb8o8hnfZjvKffc9pzGhvcEG7dVjg9yXHMDuL975v";
 export const PAYMENT_TOKEN_MINT =
   "2ADpKWBqVKCjaWY2xFkXTPo6v2Z863SefjT2GUfNHhay";
 export const NETWORK = "devnet";

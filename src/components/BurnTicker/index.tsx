@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { LogoIcon } from "../Icons/LogoIcon";
-import { FireIcon } from "../Icons/FireIcon";
 import { usePathname } from "next/navigation";
 
 type BurnTransaction = {
@@ -16,8 +15,9 @@ export function BurnTicker() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isTransactions = pathname === "/transactions";
+  const isStaking = pathname === "/staking";
 
-  if (isHome || isTransactions) return null;
+  if (isHome || isTransactions || isStaking) return null;
 
   const [transactions, setTransactions] = useState<BurnTransaction[]>([
     { id: "1", amount: 102.311, timestamp: Date.now() - 5000 },

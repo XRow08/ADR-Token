@@ -16,6 +16,7 @@ import { usePurchase } from "@/hooks/usePurchase";
 import { BoxIcon } from "../Icons/BoxIcon";
 import { HistoricIcon } from "../Icons/HistoricIcon";
 import { BurnTicker } from "../BurnTicker";
+import { StakingIcon } from "../Icons/StakingIcon";
 
 const WalletMultiButton = dynamic(
   () =>
@@ -212,6 +213,21 @@ export function Header() {
                   Historic
                 </Link>
               </motion.nav>
+
+              <motion.nav
+                className="flex items-center gap-6"
+                initial="hidden"
+                animate="visible"
+                variants={buttonVariants}
+              >
+                <Link
+                  href="/staking"
+                  className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
+                >
+                  <StakingIcon />
+                  Staking
+                </Link>
+              </motion.nav>
             </div>
           </div>
 
@@ -352,6 +368,17 @@ export function Header() {
                     >
                       <HistoricIcon />
                       Historic
+                    </Link>
+                  </motion.div>
+
+                  <motion.div variants={menuItemVariants}>
+                    <Link
+                      href="/staking"
+                      className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-4"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <StakingIcon />
+                      Staking
                     </Link>
                   </motion.div>
                 </motion.div>

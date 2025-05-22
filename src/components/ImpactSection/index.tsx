@@ -35,8 +35,9 @@ export const ImpactSection = () => {
           <Image
             src="/images/bg-section3.png"
             alt="Blockchain and Social Impact"
-            fill
-            className="object-cover"
+            width={1000000}
+            height={1000000}
+            className="object-cover w-full h-full"
             priority
           />
         </div>

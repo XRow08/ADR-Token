@@ -1,19 +1,9 @@
 "use client";
-import {
-  getAssociatedTokenAddress,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
-import {
-  SystemProgram,
-  PublicKey,
-  SYSVAR_RENT_PUBKEY,
-} from '@solana/web3.js';
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { SystemProgram, PublicKey } from '@solana/web3.js';
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { idl } from "@/constants/idl";
-import {
-  CONFIG_ACCOUNT,
-  PAYMENT_TOKEN_MINT,
-} from "@/constants";
+import { CONFIG_ACCOUNT, PAYMENT_TOKEN_MINT } from "@/constants";
 import { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 

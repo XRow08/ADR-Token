@@ -9,19 +9,18 @@ import {
   Transaction,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-  sendAndConfirmTransaction,
   PublicKey,
 } from '@solana/web3.js';
-import { Program, AnchorProvider, BN, web3 } from "@coral-xyz/anchor";
+import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { idl } from "@/constants/idl";
 import {
   CONFIG_ACCOUNT,
-  PAYMENT_TOKEN_MINT,
-  PROGRAM_ID,
+  PAYMENT_TOKEN_MINT
 } from "@/constants";
 import { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { StakingPeriod } from "@/interfaces";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PeriodInfo {
   label: string;
@@ -30,42 +29,45 @@ interface PeriodInfo {
   period: StakingPeriod;
 }
 
-const PERIOD_INFO: Record<StakingPeriod, PeriodInfo> = {
+const getPeriodInfo = (t: (key: string) => string): Record<StakingPeriod, PeriodInfo> => ({
   [StakingPeriod.Minutes1]: {
-    label: "7 Days",
+    label: t("staking.days7"),
     apy: 5,
     minutes: 1,
     period: StakingPeriod.Minutes1
   },
   [StakingPeriod.Minutes2]: {
-    label: "14 Days",
+    label: t("staking.days14"),
     apy: 10,
     minutes: 2,
     period: StakingPeriod.Minutes2
   },
   [StakingPeriod.Minutes5]: {
-    label: "30 Days",
+    label: t("staking.days30"),
     apy: 20,
     minutes: 5,
     period: StakingPeriod.Minutes5
   },
   [StakingPeriod.Minutes10]: {
-    label: "90 Days",
+    label: t("staking.days90"),
     apy: 40,
     minutes: 10,
     period: StakingPeriod.Minutes10
   },
   [StakingPeriod.Minutes30]: {
-    label: "180 Days",
+    label: t("staking.days180"),
     apy: 50,
     minutes: 30,
     period: StakingPeriod.Minutes30
   },
-};
+});
 
 export function useStaking() {
   const { publicKey, signTransaction, signAllTransactions, connected } = useWallet();
   const { connection } = useConnection();
+  const { t } = useLanguage();
+  
+  const PERIOD_INFO = getPeriodInfo(t);
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState<StakingPeriod>(StakingPeriod.Minutes1);
@@ -87,7 +89,6 @@ export function useStaking() {
     const periodInfo = PERIOD_INFO[selectedPeriod];
     return (Number(amount) * periodInfo.apy / 100) * (periodInfo.minutes / (365 * 24 * 60));
   };
-
 
   const onStake = async () => {
     try {
@@ -177,7 +178,6 @@ export function useStaking() {
           maxRetries: 5,
         });
 
-
       setTimeout(() => {
         getBalance();
         console.log("Staking successful!", tx);
@@ -246,7 +246,8 @@ export function useStaking() {
     isValid,
     periods: Object.entries(PERIOD_INFO).map(([key, info]) => ({
       ...info,
-      period: key as StakingPeriod
-    }))
+      period: info.period,
+    })),
+    getBalance,
   };
 }

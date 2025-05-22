@@ -1,9 +1,9 @@
 "use client";
-
 import { ScrollAnimation } from "@/components/ScrollAnimation";
 import Image from "next/image";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 export const ImpactSection = () => {
+  const { t } = useLanguage();
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start pt-[144px] pb-20 md:pb-0">
       <div className="flex flex-col items-center justify-center max-w-[1062px] px-6 md:px-0">
@@ -14,16 +14,13 @@ export const ImpactSection = () => {
           delay={0.1}
         >
           <h1 className="text-[#EEE] text-[30px] xl:text-[36px] w-full font-bold text-center leading-[40px] md:leading-[61.6px]">
-            Blockchain and Social Impact
+            {t("impact.title")}
           </h1>
         </ScrollAnimation>
 
         <ScrollAnimation type="fade" direction="up" duration={0.7} delay={0.3}>
           <p className="xl:leading-[23.4px] text-center text-[#B4B4B4]">
-            The advancement of blockchain technology and cryptocurrencies goes beyond
-            finance, creating opportunities for social impact initiatives. Tokens
-            like the Adriano Token combine financial potential and social transformation,
-            creating projects where economic success drives real benefits for communities.
+            {t("impact.description1")}
           </p>
         </ScrollAnimation>
       </div>
@@ -47,9 +44,7 @@ export const ImpactSection = () => {
 
       <ScrollAnimation type="slide" direction="up" duration={0.6} delay={0.6}>
         <p className="xl:leading-[23.4px] text-center text-[#B4B4B4] max-w-[1062px] mt-4 px-6 md:px-0">
-          The advantages of this model include transparency, elimination of
-          intermediaries, global reach, community engagement, and
-          financial sustainability.
+          {t("impact.description2")}
         </p>
       </ScrollAnimation>
     </div>

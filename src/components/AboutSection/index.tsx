@@ -1,9 +1,9 @@
 "use client";
-
 import { LogoIcon } from "@/components/Icons/LogoIcon";
 import { ScrollAnimation } from "@/components/ScrollAnimation";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 export const AboutSection = () => {
+  const { t } = useLanguage();
   return (
     <div className="flex items-start md:items-center justify-between px-6 md:px-0">
       <ScrollAnimation
@@ -14,14 +14,12 @@ export const AboutSection = () => {
         className="w-full flex flex-col items-start justify-start "
       >
         <h1 className="text-[#EEE] text-[24px] xl:text-[36px] font-bold w-full md:leading-[61.6px]">
-          <span className="font-black">Adriano Token</span> from Vila Cruzeiro to the
-          World
-        </h1>
+          {" "}
+          <span className="font-black">{t("about.title")}</span>{" "}
+        </h1>{" "}
         <p className="xl:text-lg xl:leading-[23.4px] text-[#B4B4B4]">
-          World football icon and pride of Brazil, Adriano Imperador
-          presents his official token: a project that celebrates his <br />{" "}
-          journey and drives social actions to transform the community
-          where it all began.
+          {" "}
+          {t("about.description")}{" "}
         </p>
       </ScrollAnimation>
       <ScrollAnimation

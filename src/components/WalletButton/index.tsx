@@ -1,17 +1,4 @@
-"use client";
-import { useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { truncateAddress } from '@/utils/address';
-
-interface WalletButtonProps {
-  className?: string;
-}
-
-export default function WalletButton({ className = '' }: WalletButtonProps) {
-  const { publicKey, connected, disconnect } = useWallet();
-  const { setVisible } = useWalletModal();
-  const [showDropdown, setShowDropdown] = useState(false);
+"use client";import { useState } from 'react';import { useWallet } from '@solana/wallet-adapter-react';import { useWalletModal } from '@solana/wallet-adapter-react-ui';import { truncateAddress } from '@/utils/address';import { useLanguage } from '@/contexts/LanguageContext';interface WalletButtonProps {  className?: string;}export default function WalletButton({ className = '' }: WalletButtonProps) {  const { publicKey, connected, disconnect } = useWallet();  const { setVisible } = useWalletModal();  const [showDropdown, setShowDropdown] = useState(false);  const { t } = useLanguage();
 
   const handleConnect = () => {
     setVisible(true);
@@ -32,7 +19,7 @@ export default function WalletButton({ className = '' }: WalletButtonProps) {
         onClick={handleConnect}
         className={`px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors ${className}`}
       >
-        Connect Wallet
+        {t('wallet.connect')}
       </button>
     );
   }
@@ -58,14 +45,14 @@ export default function WalletButton({ className = '' }: WalletButtonProps) {
       {showDropdown && (
         <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10">
           <div className="p-3 border-b border-gray-700">
-            <p className="text-sm text-gray-400">Connected as</p>
+            <p className="text-sm text-gray-400">{t('wallet.connected')}</p>
             <p className="text-white font-medium break-all">{publicKey.toString()}</p>
           </div>
           <button
             onClick={handleDisconnect}
             className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition-colors"
           >
-            Disconnect
+            {t('wallet.disconnect')}
           </button>
         </div>
       )}

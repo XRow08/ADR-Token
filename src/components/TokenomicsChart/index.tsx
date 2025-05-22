@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef, useEffect, useState } from "react";
 import { ScrollAnimation } from "@/components/ScrollAnimation";
 import { motion } from "framer-motion";
@@ -8,22 +7,26 @@ import { StarIcon } from "../Icons/StarIcon";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
-
-const tokenDistribution = [
-  { label: "Liquidity", percentage: 25, color: "#FFCA16" },
-  { label: "Charity", percentage: 15, color: "#FE852E" },
-  { label: "Public Distribution", percentage: 25, color: "#FFFFFF" },
-  { label: "Team", percentage: 15, color: "#3A62FF" },
-  { label: "Marketing Operations", percentage: 12, color: "#C665FF" },
-  { label: "CEX", percentage: 8, color: "#1FD822" },
-];
 
 export const TokenomicsChart = () => {
   const chartRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t } = useLanguage();
+  const tokenDistribution = [
+    { label: t("tokenomics.liquidity"), percentage: 25, color: "#FFCA16" },
+    { label: t("tokenomics.charity"), percentage: 15, color: "#FE852E" },
+    {
+      label: t("tokenomics.publicDistribution"),
+      percentage: 25,
+      color: "#FFFFFF",
+    },
+    { label: t("tokenomics.team"), percentage: 15, color: "#3A62FF" },
+    { label: t("tokenomics.marketing"), percentage: 12, color: "#C665FF" },
+    { label: t("tokenomics.cex"), percentage: 8, color: "#1FD822" },
+  ];
 
   useEffect(() => {
     setIsVisible(true);
@@ -140,7 +143,8 @@ export const TokenomicsChart = () => {
           delay={0.1}
         >
           <div className="text-[#EEE] text-[30px] xl:text-[36px] w-full font-black text-center flex items-center justify-center gap-2 leading-[40px] md:leading-[61.6px]">
-            Tokenomics
+            {" "}
+            {t("tokenomics.title")}
             <div className="flex items-center gap-2">
               <StarIcon fill={tokenDistribution[5].color} />
               <StarIcon fill={tokenDistribution[3].color} />

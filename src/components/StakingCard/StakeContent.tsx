@@ -2,17 +2,22 @@ import { motion } from "framer-motion";
 import { Button } from "../Button";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { useStaking } from "@/hooks/useStaking";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 export function StakeContent() {
   const staking = useStaking();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-[420px] flex flex-col">
       <div className="flex-1 space-y-6">
         <div>
+          {" "}
           <div className="flex justify-between mb-2">
-            <span>Amount to stake</span>
-            <span>Balance: {staking.balance} $ADR</span>
+            {" "}
+            <span>{t("staking.amount")}</span>{" "}
+            <span>
+              {t("staking.balance")}: {staking.balance} $ADR
+            </span>{" "}
           </div>
           <div className="flex items-center bg-[#1A1A1A] rounded p-2">
             <div className="flex items-center gap-1 text-sm bg-[#313131] rounded p-1 px-[8px]">
@@ -31,16 +36,19 @@ export function StakeContent() {
               onClick={staking.handleMaxClick}
               className="text-[#FFD60A] hover:brightness-110 transition-all"
             >
-              MAX
+              {" "}
+              {t("staking.max")}{" "}
             </motion.button>
           </div>
           {Number(staking.amount) > staking.balance && (
-            <p className="text-red-500 text-sm mt-1">Insufficient balance</p>
+            <p className="text-red-500 text-sm mt-1">
+              {t("staking.insufficientBalance")}
+            </p>
           )}
         </div>
 
         <div>
-          <h2 className="mb-2 font-semibold text-xl">Lock-up Period</h2>
+          <h2 className="mb-2 font-semibold text-xl">{t("staking.period")}</h2>
           <div className="flex flex-wrap gap-2 text-sm">
             {staking.periods.map((periodInfo) => (
               <motion.button
@@ -64,25 +72,37 @@ export function StakeContent() {
         </div>
 
         <div>
-          <h2 className="mb-4 font-semibold text-xl">Resume</h2>
+          {" "}
+          <h2 className="mb-4 font-semibold text-xl">{t("staking.resume")}</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Staking Amount:</span>
-              <span className="font-bold">{staking.amount || "0"} $ADR</span>
-            </div>
+              {" "}
+              <span className="text-[#B4B4B4]">
+                {t("staking.stakingAmount")}:
+              </span>{" "}
+              <span className="font-bold">{staking.amount || "0"} $ADR</span>{" "}
+            </div>{" "}
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Lock-up Period:</span>
+              {" "}
+              <span className="text-[#B4B4B4]">
+                {t("staking.lockupPeriod")}:
+              </span>{" "}
               <span className="font-bold">
+                {" "}
                 {staking.periods.find(
                   (p) => p.period === staking.selectedPeriod
-                )?.label || "None"}
-              </span>
-            </div>
+                )?.label || t("staking.none")}{" "}
+              </span>{" "}
+            </div>{" "}
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Estimated Rewards:</span>
+              {" "}
+              <span className="text-[#B4B4B4]">
+                {t("staking.estimatedRewards")}:
+              </span>{" "}
               <span className="font-bold">
-                {staking.estimatedRewards.toFixed(3)} $ADR
-              </span>
+                {" "}
+                {staking.estimatedRewards.toFixed(3)} $ADR{" "}
+              </span>{" "}
             </div>
           </div>
         </div>
@@ -93,7 +113,8 @@ export function StakeContent() {
         disabled={!staking.isValid || staking.isLoading}
         className="w-1/3 mt-2 h-[44px] self-end"
       >
-        {staking.isLoading ? "Processing..." : "Confirm Staking"}
+        {" "}
+        {staking.isLoading ? t("common.loading") : t("staking.stake")}{" "}
       </Button>
     </div>
   );

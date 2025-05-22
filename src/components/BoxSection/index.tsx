@@ -8,8 +8,9 @@ import { PurchaseIcon } from "../Icons/PurchaseIcon";
 import ItemCard from "../ItemCard.tsx";
 import { ScrollAnimation } from "../ScrollAnimation";
 import { motion, AnimatePresence } from "framer-motion";
-import { cryptoData, itensData } from "@/constants";
+import { cryptoData, getItensData } from "@/constants";
 import { usePurchase } from "@/hooks/usePurchase";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function BoxSection({ boxName }: { boxName: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,8 +24,9 @@ export function BoxSection({ boxName }: { boxName: string }) {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isMobile, setIsMobile] = useState(false);
   const { onMint } = usePurchase();
+  const { t } = useLanguage();
 
-  const itens = boxName === "cryptos" ? cryptoData : itensData;
+  const itens = boxName === "cryptos" ? cryptoData : getItensData(t);
 
   const carouselItems = [];
   for (let i = 0; i < 30; i++) {
@@ -216,12 +218,12 @@ export function BoxSection({ boxName }: { boxName: string }) {
                       },
                     }}
                   >
-                    {boxName === "cryptos" ? "Cryptos" : "Super prizes"}
+                    {boxName === "cryptos"
+                      ? t("box.cryptos")
+                      : t("box.superPrizes")}
                   </motion.h1>
                   <p className="text-xs sm:text-sm text-[#B4B4B4] max-w-[300px] sm:max-w-none">
-                    We value the importance of solidarity and empathy, offering
-                    the opportunity to win essential products that make a
-                    difference in everyday life!
+                    {t("box.description")}
                   </p>
                 </div>
               </div>
@@ -245,7 +247,8 @@ export function BoxSection({ boxName }: { boxName: string }) {
                     >
                       <SimulationIcon className="w-5 h-5" />
                       <span className="ml-1 text-sm sm:text-base">
-                        Simulation
+                        {" "}
+                        {t("box.simulation")}{" "}
                       </span>
                     </Button>
                   </motion.div>
@@ -260,7 +263,8 @@ export function BoxSection({ boxName }: { boxName: string }) {
                     >
                       <PurchaseIcon className="w-5 h-5" />
                       <span className="ml-1 text-sm sm:text-base">
-                        Purchase
+                        {" "}
+                        {t("box.purchase")}{" "}
                       </span>
                     </Button>
                   </motion.div>
@@ -276,7 +280,7 @@ export function BoxSection({ boxName }: { boxName: string }) {
             duration={0.7}
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mt-10">
-              {itens.map((box, index) => (
+              {itens.map((box: any, index: number) => (
                 <motion.div
                   key={box.id + index}
                   whileHover={{ scale: 1.05 }}
@@ -331,10 +335,12 @@ export function BoxSection({ boxName }: { boxName: string }) {
                     />
                   </div>
                   <h3 className="text-lg sm:text-xl font-bold text-center mb-2">
-                    Processing your purchase
-                  </h3>
+                    {" "}
+                    {t("box.processingPurchase")}{" "}
+                  </h3>{" "}
                   <p className="text-[#B4B4B4] text-center text-sm sm:text-base">
-                    Opening your mystery box...
+                    {" "}
+                    {t("box.openingBox")}{" "}
                   </p>
                 </div>
               )}
@@ -379,7 +385,7 @@ export function BoxSection({ boxName }: { boxName: string }) {
                       }}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
-                      Congratulations!
+                      {t("box.congratulations")}
                     </motion.h3>
                     <h4 className="text-lg sm:text-xl font-semibold mb-1">
                       {selectedItem.title}
@@ -391,7 +397,7 @@ export function BoxSection({ boxName }: { boxName: string }) {
                         variant="primary"
                         onClick={closeModal}
                       >
-                        Awesome!
+                        {t("box.awesome")}
                       </Button>
                     </div>
                   </motion.div>

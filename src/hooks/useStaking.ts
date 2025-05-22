@@ -12,11 +12,12 @@ import {
   sendAndConfirmTransaction,
   PublicKey,
 } from '@solana/web3.js';
-import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
+import { Program, AnchorProvider, BN, web3 } from "@coral-xyz/anchor";
 import { idl } from "@/constants/idl";
 import {
   CONFIG_ACCOUNT,
   PAYMENT_TOKEN_MINT,
+  PROGRAM_ID,
 } from "@/constants";
 import { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -26,33 +27,39 @@ interface PeriodInfo {
   label: string;
   apy: number;
   minutes: number;
+  period: StakingPeriod;
 }
 
 const PERIOD_INFO: Record<StakingPeriod, PeriodInfo> = {
   [StakingPeriod.Minutes1]: {
     label: "7 Days",
     apy: 5,
-    minutes: 1
+    minutes: 1,
+    period: StakingPeriod.Minutes1
   },
   [StakingPeriod.Minutes2]: {
     label: "14 Days",
     apy: 10,
-    minutes: 2
+    minutes: 2,
+    period: StakingPeriod.Minutes2
   },
   [StakingPeriod.Minutes5]: {
     label: "30 Days",
     apy: 20,
-    minutes: 5
+    minutes: 5,
+    period: StakingPeriod.Minutes5
   },
   [StakingPeriod.Minutes10]: {
     label: "90 Days",
     apy: 40,
-    minutes: 10
+    minutes: 10,
+    period: StakingPeriod.Minutes10
   },
   [StakingPeriod.Minutes30]: {
     label: "180 Days",
     apy: 50,
-    minutes: 30
+    minutes: 30,
+    period: StakingPeriod.Minutes30
   },
 };
 
@@ -116,10 +123,6 @@ export function useStaking() {
         program.programId
       );
 
-      console.log("Derived addresses:");
-      console.log("- Stake Account:", stakeAccount.toBase58());
-      console.log("- Stake Authority:", stakeAuthority.toBase58());
-
       const stakerTokenAccount = await getAssociatedTokenAddress(
         new PublicKey(PAYMENT_TOKEN_MINT),
         publicKey
@@ -131,47 +134,38 @@ export function useStaking() {
         true
       );
 
-      console.log("Token accounts:");
-      console.log("- Staker Token Account:", stakerTokenAccount.toBase58());
-      console.log("- Stake Token Account:", stakeTokenAccount.toBase58());
+      const config = new PublicKey(CONFIG_ACCOUNT);
 
       const stakeTokenAccountInfo = await connection.getAccountInfo(stakeTokenAccount);
-
       if (!stakeTokenAccountInfo) {
+        console.log("Creating stake token account...");
         const createAtaIx = createAssociatedTokenAccountInstruction(
           publicKey,
           stakeTokenAccount,
           stakeAuthority,
           new PublicKey(PAYMENT_TOKEN_MINT)
         );
-
-        const ataTx = new Transaction().add(createAtaIx);
-        ataTx.feePayer = publicKey;
-        ataTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-
-        const signedTx = await signTransaction(ataTx);
-        const signature = await connection.sendRawTransaction(signedTx.serialize());
-        await connection.confirmTransaction(signature, 'confirmed');
-        console.log("Created stake token account:", signature);
+        const tx = new Transaction().add(createAtaIx);
+        tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+        tx.feePayer = publicKey;
+        const signedTx = await signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signedTx.serialize());
+        await connection.confirmTransaction(sig);
+        console.log("Stake token account created successfully!");
       }
 
-      console.log("Preparing stake transaction...");
-      console.log("Amount:", new BN(Number(amount) * 1e9).toString());
-      console.log("Config account:", new PublicKey(CONFIG_ACCOUNT).toBase58());
+      const selectedPeriodInfo = { [selectedPeriod]: {} };
 
-      const txId = await program.methods
-        .stakeTokens(
-          new BN(Number(amount) * 1e9),
-          { selectedPeriod: {} }
-        )
+      const tx = await program.methods
+        .stakeTokens(new BN(Number(amount) * 1e9), selectedPeriodInfo)
         .accounts({
-          staker: publicKey,
+          staker: wallet.publicKey,
           tokenMint: new PublicKey(PAYMENT_TOKEN_MINT),
           stakerTokenAccount,
           stakeAccount,
           stakeTokenAccount,
           stakeAuthority,
-          config: new PublicKey(CONFIG_ACCOUNT),
+          config,
           tokenProgram: TOKEN_PROGRAM_ID,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
@@ -179,19 +173,17 @@ export function useStaking() {
         })
         .rpc({
           skipPreflight: true,
-          maxRetries: 5
+          commitment: "confirmed",
+          maxRetries: 5,
         });
 
-      console.log("Transaction sent:", txId);
 
-      const confirmation = await connection.confirmTransaction(txId, 'confirmed');
-      if (confirmation.value.err) {
-        throw new Error(`Transaction failed: ${confirmation.value.err}`);
-      }
-      getBalance();
-      console.log("Staking successful!");
-      setAmount("");
-      setSelectedPeriod(StakingPeriod.Minutes1);
+      setTimeout(() => {
+        getBalance();
+        console.log("Staking successful!", tx);
+        setAmount("");
+        setSelectedPeriod(StakingPeriod.Minutes1);
+      }, 2000);
     } catch (error) {
       console.error("Staking failed:", error);
       throw error;
@@ -253,8 +245,8 @@ export function useStaking() {
     estimatedRewards,
     isValid,
     periods: Object.entries(PERIOD_INFO).map(([key, info]) => ({
-      period: key as StakingPeriod,
-      ...info
+      ...info,
+      period: key as StakingPeriod
     }))
   };
 }

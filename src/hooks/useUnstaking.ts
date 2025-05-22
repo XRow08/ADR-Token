@@ -44,7 +44,6 @@ export function useUnstaking() {
 
       const program = new Program(idl, provider);
 
-      // Derive addresses
       const [stakeAccount] = await PublicKey.findProgramAddress(
         [
           Buffer.from('stake_account'),
@@ -54,7 +53,7 @@ export function useUnstaking() {
         program.programId
       );
 
-      const [stakeAuthority] = await PublicKey.findProgramAddress(
+      const [stakeAuthority, stakeAuthorityBump] = await PublicKey.findProgramAddress(
         [Buffer.from("stake_authority")],
         program.programId
       );
@@ -70,7 +69,17 @@ export function useUnstaking() {
         true
       );
 
-      const txId = await program.methods
+      const stakeAccountData = await (program.account as any).stakeAccount.fetch(stakeAccount);
+      console.log("Stake account data:", stakeAccountData);
+
+      const now = Math.floor(Date.now() / 1000);
+      if (now < stakeAccountData.unlockTime.toNumber()) {
+        const secondsLeft = stakeAccountData.unlockTime.toNumber() - now;
+        console.log("Você só pode des-stake em", secondsLeft, "segundos");
+        throw new Error(`Você só pode des-stake em ${secondsLeft} segundos`);
+      }
+
+      const tx = await program.methods
         .unstakeTokens()
         .accounts({
           staker: publicKey,
@@ -84,16 +93,19 @@ export function useUnstaking() {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .rpc({
-          skipPreflight: true,
-          maxRetries: 5
-        });
+        .transaction();
+      tx.feePayer = publicKey;
+      const latestBlockhash = await connection.getLatestBlockhash();
+      tx.recentBlockhash = latestBlockhash.blockhash;
 
-      console.log("Unstake transaction sent:", txId);
 
-      const confirmation = await connection.confirmTransaction(txId, 'confirmed');
-      if (confirmation.value.err) {
-        throw new Error(`Transaction failed: ${confirmation.value.err}`);
+      const simulationResult = await connection.simulateTransaction(tx);
+
+      if (simulationResult.value.err) {
+        console.error("Simulation failed:", simulationResult.value.err);
+        throw new Error("Simulation failed: " + JSON.stringify(simulationResult.value.err));
+      } else {
+        console.log("Simulation succeeded");
       }
       getCurrentStake();
       console.log("Unstaking successful!");

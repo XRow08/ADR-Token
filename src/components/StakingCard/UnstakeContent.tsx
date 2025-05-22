@@ -1,6 +1,7 @@
 import { Button } from "../Button";
 import { useUnstaking } from "@/hooks/useUnstaking";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function formatTimeLeft(seconds: number) {
   if (seconds <= 0) return "00:00:00";
@@ -18,6 +19,7 @@ function formatTimeLeft(seconds: number) {
 
 export function UnstakeContent() {
   const { stakeInfo, onUnstake, isLoading } = useUnstaking();
+  const { t } = useLanguage();
   const [secondsLeft, setSecondsLeft] = useState<number>(0);
 
   useEffect(() => {
@@ -31,7 +33,9 @@ export function UnstakeContent() {
   }, [stakeInfo]);
 
   if (!stakeInfo) {
-    return <div className="text-center py-8">Loading stake info...</div>;
+    return (
+      <div className="text-center py-8">{t("staking.loadingStakeInfo")}</div>
+    );
   }
 
   const canUnstake = secondsLeft <= 0 && !stakeInfo.claimed;
@@ -40,44 +44,42 @@ export function UnstakeContent() {
     <div className="flex flex-col">
       <div className="flex-1 space-y-6">
         <div>
-          <h2 className="mb-4 font-semibold text-xl">Resume</h2>
+          <h2 className="mb-4 font-semibold text-xl">{t("staking.resume")}</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Staked Amount:</span>
+              <span className="text-[#B4B4B4]">
+                {t("staking.stakedAmountLabel")}:
+              </span>
               <span className="font-bold">{stakeInfo.amount || "0"} $ADR</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Period:</span>
+              <span className="text-[#B4B4B4]">{t("staking.period")}:</span>
               <span className="font-bold">{stakeInfo.period}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Start Time:</span>
+              <span className="text-[#B4B4B4]">{t("staking.startTime")}:</span>
               <span className="font-bold">
                 {stakeInfo.startTime?.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Unlock Time:</span>
+              <span className="text-[#B4B4B4]">{t("staking.unlockTime")}:</span>
               <span className="font-bold">
                 {stakeInfo.unlockTime?.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Status:</span>
+              <span className="text-[#B4B4B4]">{t("staking.status")}:</span>
               <span
                 className={`font-bold ${
                   stakeInfo.claimed ? "text-green-500" : "text-yellow-400"
                 }`}
               >
-                {stakeInfo.claimed
-                  ? "Claimed"
-                  : secondsLeft > 0
-                  ? "Locked"
-                  : "Available"}
+                                {stakeInfo.claimed                  ? t("staking.claimed")                  : secondsLeft > 0                  ? t("staking.locked")                  : t("staking.available")}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[#B4B4B4]">Time Left:</span>
+              <span className="text-[#B4B4B4]">{t("staking.timeLeft")}:</span>
               <span className="font-mono text-lg">
                 {secondsLeft > 0 ? formatTimeLeft(secondsLeft) : "00:00:00"}
               </span>
@@ -98,13 +100,7 @@ export function UnstakeContent() {
         disabled={isLoading || !canUnstake}
         className="w-1/3 mt-8 h-[44px] self-end"
       >
-        {isLoading
-          ? "Processing..."
-          : stakeInfo.claimed
-          ? "Already Claimed"
-          : secondsLeft > 0
-          ? "Wait to Unstake"
-          : "Confirm Unstake"}
+                {isLoading          ? t("staking.processing")          : stakeInfo.claimed          ? t("staking.alreadyClaimed")          : secondsLeft > 0          ? t("staking.waitToUnstake")          : t("staking.confirmUnstake")}
       </Button>
     </div>
   );

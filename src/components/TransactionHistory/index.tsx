@@ -1,12 +1,11 @@
 "use client";
-
 import { useState, useRef } from "react";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { ShirtIcon } from "../Icons/ShirtIcon";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { Header } from "../Header";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 type Transaction = {
   id: string;
   name: string;
@@ -14,11 +13,23 @@ type Transaction = {
   status: "Completed" | "Error" | "Processing...";
   date: string;
 };
-
 export function TransactionHistory() {
   const [activeTab, setActiveTab] = useState<"all" | "recent">("all");
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const { t } = useLanguage();
+  const getStatusTranslation = (status: string) => {
+    switch (status) {
+      case "Completed":
+        return t("transactions.completed");
+      case "Error":
+        return t("transactions.error");
+      case "Processing...":
+        return t("transactions.processing");
+      default:
+        return status;
+    }
+  };
 
   const transactions: Transaction[] = [
     {
@@ -113,14 +124,15 @@ export function TransactionHistory() {
           initial="hidden"
           animate="visible"
         >
-          <h1 className="text-2xl font-bold text-white">Transaction History</h1>
+          <h1 className="text-2xl font-bold text-white">
+            {t("transactions.title")}
+          </h1>
 
           <button
             onClick={() => setActiveTab("recent")}
             className="px-4 py-2 rounded-md text-sm bg-[#1A1A1A] text-gray-400 hover:bg-[#222222] transition-colors"
           >
-            Recent
-            <span className="ml-2">→</span>
+            {t("common.filter")} <span className="ml-2">→</span>
           </button>
         </motion.div>
 
@@ -131,15 +143,15 @@ export function TransactionHistory() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {/* Table header - visible only on desktop */}
+          {/* Table header - visible only on desktop */}{" "}
           <div className="hidden sm:grid grid-cols-5 px-5 py-3 bg-[#1A1A1A] text-gray-400 text-sm font-medium">
-            <div className="col-span-1">Name</div>
-            <div className="col-span-1">ID</div>
-            <div className="col-span-1">Value</div>
-            <div className="col-span-1">Status</div>
-            <div className="col-span-1">Date</div>
+            {" "}
+            <div className="col-span-1">Name</div>{" "}
+            <div className="col-span-1">ID</div>{" "}
+            <div className="col-span-1">{t("transactions.amount")}</div>{" "}
+            <div className="col-span-1">{t("transactions.status")}</div>{" "}
+            <div className="col-span-1">{t("transactions.date")}</div>{" "}
           </div>
-
           <div>
             {transactions.map((transaction, index) => (
               <motion.div
@@ -187,6 +199,7 @@ export function TransactionHistory() {
                     </span>
                   </div>
                   <div className="col-span-1">
+                    {" "}
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs ${
                         transaction.status === "Completed"
@@ -196,8 +209,9 @@ export function TransactionHistory() {
                           : "bg-amber-900/30 text-amber-500"
                       }`}
                     >
-                      {transaction.status}
-                    </span>
+                      {" "}
+                      {getStatusTranslation(transaction.status)}{" "}
+                    </span>{" "}
                   </div>
                   <div className="col-span-1 text-gray-400 text-xs">
                     {transaction.date}
@@ -222,7 +236,8 @@ export function TransactionHistory() {
                           : "bg-amber-900/30 text-amber-500"
                       }`}
                     >
-                      {transaction.status}
+                      {" "}
+                      {getStatusTranslation(transaction.status)}{" "}
                     </span>
                   </div>
 

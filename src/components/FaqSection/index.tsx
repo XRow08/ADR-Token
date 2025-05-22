@@ -1,37 +1,9 @@
 "use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../Button";
 import { IoIosArrowDown } from "react-icons/io";
-
-const faqData = [
-  {
-    question: "What is the tokenomics of the $ADR token?",
-    answer:
-      "The $ADR token is a utility token for the Vila Cruzeiro community. It has a fixed supply of 1 billion tokens, with 30% allocated to community initiatives, 25% for platform development, 20% for the team and advisors (vested over 3 years), 15% for marketing and partnerships, and 10% for liquidity provisioning.",
-  },
-  {
-    question: "How can I use ADR Tokens on the platform?",
-    answer:
-      "ADR Tokens can be used to purchase mystery boxes with chances to win exclusive items, access premium features, participate in community governance decisions, and receive special benefits within the platform ecosystem.",
-  },
-  {
-    question: "Is ADR Token available on multiple blockchains?",
-    answer:
-      "Currently, ADR Token is available on the Solana blockchain. We chose Solana for its fast transaction speeds, low fees, and environmental efficiency. We may explore cross-chain compatibility in the future based on community needs.",
-  },
-  {
-    question: "How do I get started with ADR Tokens?",
-    answer:
-      "To get started, connect your Solana wallet (like Phantom or Solflare), purchase ADR Tokens either directly through our platform or from supported exchanges, and then use them to access platform features like mystery boxes.",
-  },
-  {
-    question: "Are there any fees for purchasing or using ADR Tokens?",
-    answer:
-      "When purchasing ADR Tokens, you'll only pay the standard Solana network transaction fees, which are typically less than $0.01. There are no additional platform fees for holding or using your tokens within our ecosystem.",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const FaqItem = ({
   question,
@@ -55,7 +27,9 @@ const FaqItem = ({
         onClick={onClick}
         className="flex justify-between items-center w-full py-5 px-4 text-left focus:outline-none"
       >
-        <h3 className="text-base sm:text-lg font-semibold text-white pr-4">{question}</h3>
+        <h3 className="text-base sm:text-lg font-semibold text-white pr-4">
+          {question}
+        </h3>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -74,7 +48,9 @@ const FaqItem = ({
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <p className="px-4 pb-5 text-sm sm:text-base text-gray-300">{answer}</p>
+            <p className="px-4 pb-5 text-sm sm:text-base text-gray-300">
+              {answer}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -84,7 +60,14 @@ const FaqItem = ({
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
+  const { t } = useLanguage();
+  const faqData = [
+    { question: t("faq.question1"), answer: t("faq.answer1") },
+    { question: t("faq.question2"), answer: t("faq.answer2") },
+    { question: t("faq.question3"), answer: t("faq.answer3") },
+    { question: t("faq.question4"), answer: t("faq.answer4") },
+    { question: t("faq.question5"), answer: t("faq.answer5") },
+  ];
   const toggleFaq = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -104,16 +87,16 @@ export function FaqSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            FAQ
-          </motion.h2>
+            {t("faq.title")}{" "}
+          </motion.h2>{" "}
           <motion.p
             className="text-sm sm:text-base text-gray-300 max-w-md mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Clear answers to the questions we hear most — because trust starts
-            with transparency
+            {" "}
+            {t("faq.description")}{" "}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -121,7 +104,9 @@ export function FaqSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="w-full sm:w-auto"
           >
-            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">Buy token $ADR</Button>
+            <Button className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg">
+              {t("header.buyToken")}
+            </Button>
           </motion.div>
         </div>
 

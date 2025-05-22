@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "../Button";
 import { LogoIcon } from "../Icons/LogoIcon";
 import {
@@ -17,7 +16,8 @@ import { BoxIcon } from "../Icons/BoxIcon";
 import { HistoricIcon } from "../Icons/HistoricIcon";
 import { BurnTicker } from "../BurnTicker";
 import { StakingIcon } from "../Icons/StakingIcon";
-
+import { LanguageToggle } from "../LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 const WalletMultiButton = dynamic(
   () =>
     import("@solana/wallet-adapter-react-ui").then(
@@ -32,6 +32,7 @@ export function Header() {
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 1]);
   const { balance, isLoading, connected } = usePurchase();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -194,8 +195,7 @@ export function Header() {
                   href="/boxes"
                   className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
                 >
-                  <BoxIcon />
-                  Boxes
+                  <BoxIcon /> {t("header.boxes")}
                 </Link>
               </motion.nav>
 
@@ -209,8 +209,7 @@ export function Header() {
                   href="/transactions"
                   className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
                 >
-                  <HistoricIcon />
-                  Historic
+                  <HistoricIcon /> {t("header.historic")}
                 </Link>
               </motion.nav>
 
@@ -224,8 +223,7 @@ export function Header() {
                   href="/staking"
                   className="text-white hover:text-[#28D939] transition-colors flex items-center gap-2"
                 >
-                  <StakingIcon />
-                  Staking
+                  <StakingIcon /> {t("header.staking")}
                 </Link>
               </motion.nav>
             </div>
@@ -236,22 +234,27 @@ export function Header() {
               initial="hidden"
               animate="visible"
               variants={buttonVariants}
+            >
+              <LanguageToggle />
+            </motion.div>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={buttonVariants}
               className="flex items-center gap-2"
             >
               {connected && <BalanceDisplay />}
-
               <div className="wallet-adapter-dropdown">
                 <WalletMultiButton className=" !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6 rounded-lg border-none" />
               </div>
             </motion.div>
-
             <motion.div
               initial="hidden"
               animate="visible"
               variants={buttonVariants}
             >
               <Button className="text-sm sm:text-base py-2 px-3 sm:px-4 md:py-2 md:px-6">
-                Buy token $ADR
+                {t("header.buyToken")}
               </Button>
             </motion.div>
           </div>
@@ -355,8 +358,7 @@ export function Header() {
                       className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-3"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <BoxIcon />
-                      Boxes
+                      <BoxIcon /> {t("header.boxes")}
                     </Link>
                   </motion.div>
 
@@ -366,8 +368,7 @@ export function Header() {
                       className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-4"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <HistoricIcon />
-                      Historic
+                      <HistoricIcon /> {t("header.historic")}
                     </Link>
                   </motion.div>
 
@@ -377,22 +378,25 @@ export function Header() {
                       className="text-white hover:text-[#28D939] transition-colors text-xl py-3 border-b border-[#222222] flex items-center gap-4"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <StakingIcon />
-                      Staking
+                      <StakingIcon /> {t("header.staking")}
                     </Link>
                   </motion.div>
                 </motion.div>
 
                 <motion.div className="flex flex-col gap-4 mt-4">
                   <motion.div variants={menuItemVariants}>
+                    <div className="flex items-center justify-between border-b border-[#222222] pb-3 mb-3">
+                      <span className="text-white text-sm">
+                        {t("common.language")}
+                      </span>
+                      <LanguageToggle />
+                    </div>
                     {connected && <BalanceDisplay />}
-
                     <WalletMultiButton
                       style={{ width: "100%" }}
                       className="mt-4 wallet-adapter-button-trigger !bg-gradient-to-r !from-[#28D939] !to-[#12A91E] !text-black font-medium w-full py-3 rounded-lg border-none hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                     />
                   </motion.div>
-
                   <motion.div variants={menuItemVariants}>
                     <Button
                       className="w-full py-3 flex items-center justify-center gap-2"
@@ -411,7 +415,7 @@ export function Header() {
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                       </svg>
-                      Buy token $ADR
+                      {t("header.buyToken")}
                     </Button>
                   </motion.div>
                 </motion.div>

@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { StakeContent } from "./StakeContent";
 import { UnstakeContent } from "./UnstakeContent";
 import { useStaking } from "@/hooks/useStaking";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 export function StakingCard() {
   const [activeTab, setActiveTab] = useState<"stake" | "unstake">("stake");
+  const { t } = useLanguage();
 
   return (
     <motion.div
@@ -33,8 +34,9 @@ export function StakingCard() {
               }`}
               whileTap={{ scale: 0.95 }}
             >
-              Stake
-            </motion.button>
+              {" "}
+              {t("staking.stake")}{" "}
+            </motion.button>{" "}
             <motion.button
               onClick={() => setActiveTab("unstake")}
               className={`relative z-10 px-8 py-2 rounded-md text-sm font-medium transition-colors duration-200 w-full ${
@@ -42,7 +44,8 @@ export function StakingCard() {
               }`}
               whileTap={{ scale: 0.95 }}
             >
-              Unstake
+              {" "}
+              {t("staking.unstake")}{" "}
             </motion.button>
           </motion.div>
         </div>

@@ -1,10 +1,9 @@
 "use client";
-
 import { useState, useRef } from "react";
 import BoxCard from "@/components/BoxCard";
 import { motion, useInView } from "framer-motion";
 import { Header } from "@/components/Header";
-
+import { useLanguage } from "@/contexts/LanguageContext";
 const boxData = [
   {
     id: "cryptos",
@@ -24,6 +23,7 @@ export default function BoxesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+  const { t } = useLanguage();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -71,10 +71,10 @@ export default function BoxesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <h2 className="text-2xl font-bold">All Boxes</h2>
+          <h2 className="text-2xl font-bold">{t("boxes.title")}</h2>
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
             <div className="text-sm text-[#B4B4B4] flex items-center bg-[#191919] rounded-lg px-4 py-2 w-full sm:w-auto">
-              <span>Recent</span>
+              <span>{t("common.filter")}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 ml-1"
@@ -93,7 +93,7 @@ export default function BoxesPage() {
             <div className="relative w-full sm:w-auto">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={t("common.search")}
                 className="bg-[#191919] rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 pl-8 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

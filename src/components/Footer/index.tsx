@@ -4,8 +4,14 @@ import { ScrollAnimation } from "../ScrollAnimation";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { Button } from "../Button";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { TwitterIcon } from "../Icons/TwitterIcon";
+import { TelegramIcon } from "../Icons/TelegramIcon";
+import { DocumentIcon } from "../Icons/DocumentIcon";
 
 export function Footer() {
+  const { t } = useLanguage();
+
   const logoVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -55,24 +61,69 @@ export function Footer() {
           </motion.div>
 
           <div className="flex items-center space-x-4 sm:space-x-6">
-            <Link href="/boxes" className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold">
-              Boxes
+            <Link
+              href="/boxes"
+              className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold"
+            >
+              {t("header.boxes")}
             </Link>
-            <Link href="/transactions" className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold hidden md:block">
-              Transactions
+            <Link
+              href="/transactions"
+              className="text-[#EEEEEE] text-xs sm:text-sm lg:text-base font-semibold hidden md:block"
+            >
+              {t("header.historic")}
             </Link>
           </div>
         </div>
 
         <div className="flex w-full items-center justify-between bg-[#3A3A3A] h-[1px] mb-6 sm:mb-8" />
 
+        {/* Social Media Links */}
+        <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-6 sm:mb-8">
+          <motion.a
+            href="https://x.com/imperadortoken"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-[#EEEEEE] hover:text-[#28D939] transition-colors duration-200"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <TwitterIcon className="w-5 h-5" />
+            <span className="text-sm font-medium">{t('footer.twitter')}</span>
+          </motion.a>
+
+          <motion.a
+            href="https://t.me/imperadortokenofficial"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-[#EEEEEE] hover:text-[#28D939] transition-colors duration-200"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <TelegramIcon className="w-5 h-5" />
+            <span className="text-sm font-medium">{t('footer.telegram')}</span>
+          </motion.a>
+
+          <motion.a
+            href="/whitepaper"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-[#EEEEEE] hover:text-[#28D939] transition-colors duration-200"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <DocumentIcon className="w-5 h-5" />
+            <span className="text-sm font-medium">{t('footer.whitepaper')}</span>
+          </motion.a>
+        </div>
+
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-[#BDBDBD] text-xs sm:text-sm text-center sm:text-left">
-            © 2025 ADR Token. All rights reserved.
+            © 2025 ADR Token. {t("footer.rights")}
           </div>
 
           <Button className="w-full sm:w-auto py-3 px-4 sm:px-6 text-sm sm:text-base">
-            Buy token $ADR
+            {t("header.buyToken")}
           </Button>
         </div>
       </ScrollAnimation>

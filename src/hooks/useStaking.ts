@@ -1,22 +1,26 @@
 "use client";
 import {
-  Connection,
-  PublicKey,
-  SystemProgram,
-} from "@solana/web3.js";
-import {
-  TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddress,
-} from "@solana/spl-token";
-import { Program, AnchorProvider, BN, web3 } from "@coral-xyz/anchor";
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID
+} from '@solana/spl-token';
+import {
+  Transaction,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+  sendAndConfirmTransaction,
+  PublicKey,
+} from '@solana/web3.js';
+import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { idl } from "@/constants/idl";
 import {
+  CONFIG_ACCOUNT,
   PAYMENT_TOKEN_MINT,
 } from "@/constants";
 import { useEffect, useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { StakingPeriod } from "@/interfaces";
-import { usePurchase } from "./usePurchase";
 
 interface PeriodInfo {
   label: string;
@@ -32,36 +36,33 @@ const PERIOD_INFO: Record<StakingPeriod, PeriodInfo> = {
   },
   [StakingPeriod.Minutes2]: {
     label: "2 Minutes",
-    apy: 7.5,
+    apy: 10,
     minutes: 2
   },
   [StakingPeriod.Minutes5]: {
     label: "5 Minutes",
-    apy: 12,
+    apy: 20,
     minutes: 5
   },
   [StakingPeriod.Minutes10]: {
     label: "10 Minutes",
-    apy: 20,
+    apy: 40,
     minutes: 10
   },
   [StakingPeriod.Minutes30]: {
     label: "30 Minutes",
-    apy: 25,
+    apy: 50,
     minutes: 30
   },
 };
 
 export function useStaking() {
-  const { publicKey, connected } = useWallet();
-  const { wallet } = useWallet();
+  const { publicKey, signTransaction, signAllTransactions, connected } = useWallet();
+  const { connection } = useConnection();
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState<StakingPeriod>(StakingPeriod.Minutes1);
   const [isLoading, setIsLoading] = useState(false);
-
-  const connectionUrl =
-    process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.devnet.solana.com";
 
   const handleMaxClick = () => {
     setAmount(balance.toString());
@@ -80,51 +81,48 @@ export function useStaking() {
     return (Number(amount) * periodInfo.apy / 100) * (periodInfo.minutes / (365 * 24 * 60));
   };
 
-  const getStakeAuthorityPDA = async (
-    programId: PublicKey
-  ): Promise<[PublicKey, number]> => {
-    return PublicKey.findProgramAddress(
-      [Buffer.from('stake_authority')],
-      programId
-    );
-  };
-
-  const getStakeAccountPDA = async (
-    programId: PublicKey,
-    owner: PublicKey,
-    tokenMint: PublicKey
-  ): Promise<[PublicKey, number]> => {
-    return PublicKey.findProgramAddress(
-      [
-        Buffer.from('stake_account'),
-        owner.toBuffer(),
-        tokenMint.toBuffer(),
-      ],
-      programId
-    );
-  };
 
   const onStake = async () => {
     try {
+      if (!publicKey) throw new Error("Wallet not connected");
       setIsLoading(true);
 
-      const connection = new Connection(connectionUrl, "confirmed");
-      const provider = new AnchorProvider(connection, window.solana, {
+      const wallet: any = {
+        publicKey,
+        signTransaction,
+        signAllTransactions,
+      };
+
+      if (!signTransaction || !signAllTransactions) {
+        throw new Error("Wallet missing required methods");
+      }
+
+      const provider = new AnchorProvider(connection, wallet, {
         commitment: "confirmed",
       });
 
       const program = new Program(idl, provider);
-
-      const [stakeAuthority] = await getStakeAuthorityPDA(program.programId);
-      const [stakeAccount] = await getStakeAccountPDA(
-        program.programId,
-        provider.wallet.publicKey,
-        new PublicKey(PAYMENT_TOKEN_MINT)
+      const [stakeAccount] = await PublicKey.findProgramAddress(
+        [
+          Buffer.from('stake_account'),
+          publicKey.toBuffer(),
+          new PublicKey(PAYMENT_TOKEN_MINT).toBuffer(),
+        ],
+        program.programId
       );
+
+      const [stakeAuthority] = await PublicKey.findProgramAddress(
+        [Buffer.from("stake_authority")],
+        program.programId
+      );
+
+      console.log("Derived addresses:");
+      console.log("- Stake Account:", stakeAccount.toBase58());
+      console.log("- Stake Authority:", stakeAuthority.toBase58());
 
       const stakerTokenAccount = await getAssociatedTokenAddress(
         new PublicKey(PAYMENT_TOKEN_MINT),
-        provider.wallet.publicKey
+        publicKey
       );
 
       const stakeTokenAccount = await getAssociatedTokenAddress(
@@ -133,30 +131,70 @@ export function useStaking() {
         true
       );
 
-      const tx = await program.methods
-        .stakeTokens(
-          new BN(Number(amount) * 1e9),
-          selectedPeriod
-        )
-        .accounts({
-          staker: provider.wallet.publicKey,
-          tokenMint: new PublicKey(PAYMENT_TOKEN_MINT),
-          stakerTokenAccount,
+      console.log("Token accounts:");
+      console.log("- Staker Token Account:", stakerTokenAccount.toBase58());
+      console.log("- Stake Token Account:", stakeTokenAccount.toBase58());
+
+      const stakeTokenAccountInfo = await connection.getAccountInfo(stakeTokenAccount);
+
+      if (!stakeTokenAccountInfo) {
+        const createAtaIx = createAssociatedTokenAccountInstruction(
+          publicKey,
           stakeTokenAccount,
           stakeAuthority,
+          new PublicKey(PAYMENT_TOKEN_MINT)
+        );
+
+        const ataTx = new Transaction().add(createAtaIx);
+        ataTx.feePayer = publicKey;
+        ataTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+        const signedTx = await signTransaction(ataTx);
+        const signature = await connection.sendRawTransaction(signedTx.serialize());
+        await connection.confirmTransaction(signature, 'confirmed');
+        console.log("Created stake token account:", signature);
+      }
+
+      console.log("Preparing stake transaction...");
+      console.log("Amount:", new BN(Number(100) * 1e9).toString());
+      console.log("Config account:", new PublicKey(CONFIG_ACCOUNT).toBase58());
+
+      const txId = await program.methods
+        .stakeTokens(
+          new BN(Number(100) * 1e9),
+          { minutes1: {} }
+        )
+        .accounts({
+          staker: publicKey,
+          tokenMint: new PublicKey(PAYMENT_TOKEN_MINT),
+          stakerTokenAccount,
           stakeAccount,
+          stakeTokenAccount,
+          stakeAuthority,
+          config: new PublicKey(CONFIG_ACCOUNT),
           tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
         })
-        .transaction();
+        .rpc({
+          skipPreflight: true,
+          maxRetries: 5
+        });
 
-      const signature = await wallet?.adapter.sendTransaction(tx, connection);
-      await connection.confirmTransaction(signature!, 'confirmed');
+      console.log("Transaction sent:", txId);
 
+      const confirmation = await connection.confirmTransaction(txId, 'confirmed');
+      if (confirmation.value.err) {
+        throw new Error(`Transaction failed: ${confirmation.value.err}`);
+      }
+      getBalance();
+      console.log("Staking successful!");
       setAmount("");
       setSelectedPeriod(StakingPeriod.Minutes1);
     } catch (error) {
       console.error("Staking failed:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -168,8 +206,6 @@ export function useStaking() {
   const getBalance = async () => {
     if (!connected || !publicKey) return;
     setIsLoading(true);
-    const connection = new Connection(connectionUrl, "confirmed");
-
     try {
       const tokenMint = new PublicKey(PAYMENT_TOKEN_MINT);
 

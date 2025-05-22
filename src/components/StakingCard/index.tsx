@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StakeContent } from "./StakeContent";
 import { UnstakeContent } from "./UnstakeContent";
+import { useStaking } from "@/hooks/useStaking";
 
 export function StakingCard() {
   const [activeTab, setActiveTab] = useState<"stake" | "unstake">("stake");
@@ -24,7 +25,6 @@ export function StakingCard() {
                 width: "50%",
                 x: activeTab === "stake" ? "0%" : "100%",
               }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
             <motion.button
               onClick={() => setActiveTab("stake")}

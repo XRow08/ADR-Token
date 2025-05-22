@@ -8,8 +8,8 @@ export default function StakingPage() {
   return (
     <section className="w-full min-h-screen">
       <Header />
-      <div className="flex flex-col items-center justify-center bg-[url('/images/bg-staking.png')] bg-cover bg-center min-h-screen py-20">
-        <div className="flex flex-col items-end max-w-[1280px] w-full px-4 mx-auto">
+      <div className="flex flex-col items-center justify-start bg-[url('/images/bg-staking.png')] bg-cover bg-center min-h-screen py-20">
+        <div className="flex flex-col items-end max-w-[1280px] mt-20 w-full px-4 mx-auto">
           <StakingCard />
         </div>
       </div>

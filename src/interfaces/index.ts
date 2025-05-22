@@ -1,11 +1,11 @@
 import { PublicKey } from "@solana/web3.js";
 
 export enum StakingPeriod {
-  Minutes1 = 'Minutes1',
-  Minutes2 = 'Minutes2',
-  Minutes5 = 'Minutes5',
-  Minutes10 = 'Minutes10',
-  Minutes30 = 'Minutes30',
+  Minutes1 = "minutes1",
+  Minutes2 = "minutes2",
+  Minutes5 = "minutes5",
+  Minutes10 = "minutes10",
+  Minutes30 = "minutes30",
 }
 
 export interface StakeInfo {
@@ -16,4 +16,24 @@ export interface StakeInfo {
   unlockTime: number;
   period: StakingPeriod;
   claimed: boolean;
-} 
+}
+
+export interface Staking {
+  balance: number;
+  amount: string;
+  handleAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleMaxClick: () => void;
+  onStake: () => Promise<void>;
+  onUnstake: () => Promise<void>;
+  selectedPeriod: StakingPeriod;
+  setSelectedPeriod: (period: StakingPeriod) => void;
+  estimatedRewards: number;
+  periods: {
+    label: string;
+    apy: number;
+    minutes: number;
+    period: StakingPeriod;
+  }[];
+  isLoading: boolean;
+}
+

@@ -41,7 +41,7 @@ export function StakeContent() {
 
         <div>
           <h2 className="mb-2 font-semibold text-xl">Lock-up Period</h2>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 text-sm">
             {staking.periods.map((periodInfo) => (
               <motion.button
                 key={periodInfo.period}
@@ -55,7 +55,7 @@ export function StakeContent() {
                 } px-4 py-2 rounded-lg transition-all duration-200`}
               >
                 {periodInfo.label}
-                <span className="block text-xs opacity-75">
+                <span className="block text-[10px] opacity-75">
                   APY {periodInfo.apy}%
                 </span>
               </motion.button>
@@ -73,7 +73,9 @@ export function StakeContent() {
             <div className="flex justify-between">
               <span className="text-[#B4B4B4]">Lock-up Period:</span>
               <span className="font-bold">
-                {staking.periods.find(p => p.period === staking.selectedPeriod)?.label || "None"}
+                {staking.periods.find(
+                  (p) => p.period === staking.selectedPeriod
+                )?.label || "None"}
               </span>
             </div>
             <div className="flex justify-between">

@@ -819,6 +819,40 @@ export const idl = {
           }
         },
         {
+          "name": "stake_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  95,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "staker"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ]
+          }
+        },
+        {
           "name": "stake_token_account",
           "writable": true,
           "pda": {
@@ -934,11 +968,6 @@ export const idl = {
               }
             ]
           }
-        },
-        {
-          "name": "stake_account",
-          "writable": true,
-          "signer": true
         },
         {
           "name": "config"

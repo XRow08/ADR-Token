@@ -1,82 +1,110 @@
-import { motion } from "framer-motion";
 import { Button } from "../Button";
-import { LogoIcon } from "../Icons/LogoIcon";
 import { useUnstaking } from "@/hooks/useUnstaking";
+import { useEffect, useState } from "react";
+
+function formatTimeLeft(seconds: number) {
+  if (seconds <= 0) return "00:00:00";
+  const h = Math.floor(seconds / 3600)
+    .toString()
+    .padStart(2, "0");
+  const m = Math.floor((seconds % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${h}:${m}:${s}`;
+}
 
 export function UnstakeContent() {
-  const unstaking = useUnstaking();
+  const { stakeInfo, onUnstake, isLoading } = useUnstaking();
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
+
+  useEffect(() => {
+    if (!stakeInfo) return;
+    setSecondsLeft(Math.max(0, Math.floor(stakeInfo.secondsLeft)));
+    if (stakeInfo.secondsLeft <= 0) return;
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [stakeInfo]);
+
+  if (!stakeInfo) {
+    return <div className="text-center py-8">Loading stake info...</div>;
+  }
+
+  const canUnstake = secondsLeft <= 0 && !stakeInfo.claimed;
 
   return (
-    <div className="min-h-[420px] flex flex-col">
+    <div className="flex flex-col">
       <div className="flex-1 space-y-6">
-        <motion.div className="bg-[#1A1A1A] rounded-lg p-4 space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm opacity-75">Total Staked</span>
-            <span className="font-bold">{unstaking.stakedBalance} $ADR</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm opacity-75">Earnings</span>
-            <span className="font-bold text-[#FFD60A]">
-              +{unstaking.earningBalance} $ADR
-            </span>
-          </div>
-        </motion.div>
-
-        <div>
-          <div className="flex justify-between mb-2">
-            <span>Amount to unstake</span>
-            <span>Available: {unstaking.stakedBalance} $ADR</span>
-          </div>
-          <div className="flex items-center bg-[#1A1A1A] rounded p-2">
-            <div className="flex items-center gap-1 text-sm bg-[#313131] rounded p-1 px-[8px]">
-              <LogoIcon className="w-4 h-4" /> $ADR
-            </div>
-            <input
-              type="text"
-              value={unstaking.amount}
-              onChange={unstaking.handleAmountChange}
-              placeholder="0.00"
-              className="bg-transparent flex-1 mx-2 outline-none w-full"
-            />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={unstaking.handleMaxClick}
-              className="text-[#FFD60A] hover:brightness-110 transition-all"
-            >
-              MAX
-            </motion.button>
-          </div>
-          {Number(unstaking.amount) > unstaking.stakedBalance && (
-            <p className="text-red-500 text-sm mt-1">
-              Amount exceeds staked balance
-            </p>
-          )}
-        </div>
-
         <div>
           <h2 className="mb-4 font-semibold text-xl">Resume</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Unstaking Amount:</span>
-              <span className="font-bold">{unstaking.amount || "0"} $ADR</span>
+              <span className="text-[#B4B4B4]">Staked Amount:</span>
+              <span className="font-bold">{stakeInfo.amount || "0"} $ADR</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#B4B4B4]">Earnings to Claim:</span>
-              <span className="font-bold text-[#FFD60A]">
-                {unstaking.earningBalance} $ADR
+              <span className="text-[#B4B4B4]">Period:</span>
+              <span className="font-bold">{stakeInfo.period}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#B4B4B4]">Start Time:</span>
+              <span className="font-bold">
+                {stakeInfo.startTime?.toLocaleString()}
               </span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-[#B4B4B4]">Unlock Time:</span>
+              <span className="font-bold">
+                {stakeInfo.unlockTime?.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#B4B4B4]">Status:</span>
+              <span
+                className={`font-bold ${
+                  stakeInfo.claimed ? "text-green-500" : "text-yellow-400"
+                }`}
+              >
+                {stakeInfo.claimed
+                  ? "Claimed"
+                  : secondsLeft > 0
+                  ? "Locked"
+                  : "Available"}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-[#B4B4B4]">Time Left:</span>
+              <span className="font-mono text-lg">
+                {secondsLeft > 0 ? formatTimeLeft(secondsLeft) : "00:00:00"}
+              </span>
+            </div>
+            {/* Se você tiver earnings/rewards, pode mostrar aqui */}
+            {/* <div className="flex justify-between">
+              <span className="">Earnings to Claim:</span>
+              <span className="font-bold text-[#FFD60A]">
+                {stakeInfo.stakedBalance} $ADR
+              </span>
+            </div> */}
           </div>
         </div>
       </div>
 
       <Button
-        onClick={unstaking.handleUnstake}
-        disabled={!unstaking.isValid || unstaking.isLoading}
-        className="w-1/3 mt-2 h-[44px] self-end"
+        onClick={onUnstake}
+        disabled={isLoading || !canUnstake}
+        className="w-1/3 mt-8 h-[44px] self-end"
       >
-        {unstaking.isLoading ? "Processing..." : "Confirm Unstake"}
+        {isLoading
+          ? "Processing..."
+          : stakeInfo.claimed
+          ? "Already Claimed"
+          : secondsLeft > 0
+          ? "Wait to Unstake"
+          : "Confirm Unstake"}
       </Button>
     </div>
   );

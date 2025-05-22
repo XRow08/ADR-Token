@@ -30,27 +30,27 @@ interface PeriodInfo {
 
 const PERIOD_INFO: Record<StakingPeriod, PeriodInfo> = {
   [StakingPeriod.Minutes1]: {
-    label: "1 Minute",
+    label: "7 Days",
     apy: 5,
     minutes: 1
   },
   [StakingPeriod.Minutes2]: {
-    label: "2 Minutes",
+    label: "14 Days",
     apy: 10,
     minutes: 2
   },
   [StakingPeriod.Minutes5]: {
-    label: "5 Minutes",
+    label: "30 Days",
     apy: 20,
     minutes: 5
   },
   [StakingPeriod.Minutes10]: {
-    label: "10 Minutes",
+    label: "90 Days",
     apy: 40,
     minutes: 10
   },
   [StakingPeriod.Minutes30]: {
-    label: "30 Minutes",
+    label: "180 Days",
     apy: 50,
     minutes: 30
   },
@@ -156,13 +156,13 @@ export function useStaking() {
       }
 
       console.log("Preparing stake transaction...");
-      console.log("Amount:", new BN(Number(100) * 1e9).toString());
+      console.log("Amount:", new BN(Number(amount) * 1e9).toString());
       console.log("Config account:", new PublicKey(CONFIG_ACCOUNT).toBase58());
 
       const txId = await program.methods
         .stakeTokens(
-          new BN(Number(100) * 1e9),
-          { minutes1: {} }
+          new BN(Number(amount) * 1e9),
+          { selectedPeriod: {} }
         )
         .accounts({
           staker: publicKey,

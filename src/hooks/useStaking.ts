@@ -1,21 +1,18 @@
 "use client";
+import * as anchor from '@coral-xyz/anchor';
 import {
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddress,
-  TOKEN_PROGRAM_ID,
-  ASSOCIATED_TOKEN_PROGRAM_ID
 } from '@solana/spl-token';
 import {
   Transaction,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
   PublicKey,
 } from '@solana/web3.js';
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
-import { idl } from "@/constants/idl";
 import {
   CONFIG_ACCOUNT,
-  PAYMENT_TOKEN_MINT
+  PAYMENT_TOKEN_MINT,
+  PROGRAM_ID
 } from "@/constants";
 import { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -66,7 +63,7 @@ export function useStaking() {
   const { publicKey, signTransaction, signAllTransactions, connected } = useWallet();
   const { connection } = useConnection();
   const { t } = useLanguage();
-  
+
   const PERIOD_INFO = getPeriodInfo(t);
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState("");
@@ -108,7 +105,7 @@ export function useStaking() {
       const provider = new AnchorProvider(connection, wallet, {
         commitment: "confirmed",
       });
-
+      const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
       const program = new Program(idl, provider);
       const [stakeAccount] = await PublicKey.findProgramAddress(
         [
@@ -155,10 +152,16 @@ export function useStaking() {
         console.log("Stake token account created successfully!");
       }
 
-      const selectedPeriodInfo = { [selectedPeriod]: {} };
+      const stakingPeriodArg = { [selectedPeriod]: {} };
+
+      console.log("Staking period arg:", stakingPeriodArg);
+
+      console.log("Public Key:", publicKey?.toString());
+      console.log("Payment Token Mint:", PAYMENT_TOKEN_MINT);
+      console.log("Amount:", amount);
 
       const tx = await program.methods
-        .stakeTokens(new BN(Number(amount) * 1e9), selectedPeriodInfo)
+        .stakeTokens(new BN(Number(amount) * 1e9), stakingPeriodArg)
         .accounts({
           staker: wallet.publicKey,
           tokenMint: new PublicKey(PAYMENT_TOKEN_MINT),
@@ -167,10 +170,10 @@ export function useStaking() {
           stakeTokenAccount,
           stakeAuthority,
           config,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
+          tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+          associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .rpc({
           skipPreflight: true,

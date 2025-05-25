@@ -1,9 +1,9 @@
 "use client";
+import * as anchor from '@coral-xyz/anchor';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { SystemProgram, PublicKey } from '@solana/web3.js';
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
-import { idl } from "@/constants/idl";
-import { CONFIG_ACCOUNT, PAYMENT_TOKEN_MINT } from "@/constants";
+import { CONFIG_ACCOUNT, PAYMENT_TOKEN_MINT, PROGRAM_ID } from "@/constants";
 import { useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
@@ -31,7 +31,7 @@ export function useUnstaking() {
       const provider = new AnchorProvider(connection, wallet, {
         commitment: "confirmed",
       });
-
+      const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
       const program = new Program(idl, provider);
 
       const [stakeAccount] = await PublicKey.findProgramAddress(
@@ -43,7 +43,7 @@ export function useUnstaking() {
         program.programId
       );
 
-      const [stakeAuthority, stakeAuthorityBump] = await PublicKey.findProgramAddress(
+      const [stakeAuthority] = await PublicKey.findProgramAddress(
         [Buffer.from("stake_authority")],
         program.programId
       );
@@ -83,21 +83,16 @@ export function useUnstaking() {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .transaction();
-      tx.feePayer = publicKey;
-      const latestBlockhash = await connection.getLatestBlockhash();
-      tx.recentBlockhash = latestBlockhash.blockhash;
+        .rpc({
+          skipPreflight: true,
+          commitment: "confirmed",
+          maxRetries: 5,
+        });
+      setTimeout(() => {
+        getCurrentStake();
+        console.log("Unstaking successful!", tx);
+      }, 2000);
 
-
-      const simulationResult = await connection.simulateTransaction(tx);
-
-      if (simulationResult.value.err) {
-        console.error("Simulation failed:", simulationResult.value.err);
-        throw new Error("Simulation failed: " + JSON.stringify(simulationResult.value.err));
-      } else {
-        console.log("Simulation succeeded");
-      }
-      getCurrentStake();
       console.log("Unstaking successful!");
     } catch (error) {
       console.error("Unstaking failed:", error);
@@ -117,6 +112,7 @@ export function useUnstaking() {
     };
 
     const provider = new AnchorProvider(connection, wallet, { commitment: "confirmed" });
+    const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
     const program = new Program(idl, provider);
 
     const [stakeAccount] = await PublicKey.findProgramAddress(

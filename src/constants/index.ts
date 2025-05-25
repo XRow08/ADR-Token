@@ -1,12 +1,11 @@
 export const COLLECTION_NAME = "ADR Collection";
 export const COLLECTION_SYMBOL = "ADR";
 export const COLLECTION_URI = "https://your-collection-uri.com";
-export const PROGRAM_ID = "9cDdb8o8hnfZjvKffc9pzGhvcEG7dVjg9yXHMDuL975v";
+export const PROGRAM_ID = "65zQjC4UYf4zJdDyfScpZjgaBbiMRpmFhNJkFSp39GZF";
 export const PAYMENT_TOKEN_MINT =
   "2ADpKWBqVKCjaWY2xFkXTPo6v2Z863SefjT2GUfNHhay";
-export const STAKE_AUTHORITY_PDA = "GnS3i1PMjMArhM8bYG7zNFhDY35v7H9PD9pLJ7pNaGS5";
 export const NETWORK = "devnet";
-export const CONFIG_ACCOUNT = "7vyRpER1J34ZWWLsLsVwTJ4zSKxRn1DjmCyB76W626A3";
+export const CONFIG_ACCOUNT = "GBee25TDA1Tym5iZsrT4imGpzmC3cYwKRsstX6GMLbhd";
 
 export const getItensData = (t: (key: string) => string) => [{ id: "t-shirt1", title: t("items.soccerJersey"), image: "/images/itens/camisa1.png", }, { id: "t-shirt2", title: t("items.soccerJersey"), image: "/images/itens/camisa2.png", }, { id: "t-shirt3", title: t("items.soccerJersey"), image: "/images/itens/camisa3.png", }, { id: "t-shirt4", title: t("items.soccerJersey"), image: "/images/itens/camisa4.png", }, { id: "chuteira", title: t("items.soccerCleats"), image: "/images/itens/chuteira.png", }, { id: "mikasa", title: t("items.mikasaBall"), image: "/images/itens/ball.png", }, { id: "iphone", title: t("items.iphoneGiftCard"), image: "/images/itens/iphone.png", }, { id: "macbook", title: t("items.macbookGiftCard"), image: "/images/itens/macbook.png", },];// Para manter compatibilidade com código existenteexport const itensData = [  {    id: "t-shirt1",    title: "Soccer Jersey Autographed",    image: "/images/itens/camisa1.png",  },  {    id: "t-shirt2",    title: "Soccer Jersey Autographed",    image: "/images/itens/camisa2.png",  },  {    id: "t-shirt3",    title: "Soccer Jersey Autographed",    image: "/images/itens/camisa3.png",  },  {    id: "t-shirt4",    title: "Soccer Jersey Autographed",    image: "/images/itens/camisa4.png",  },  {    id: "chuteira",    title: "Soccer Cleats",    image: "/images/itens/chuteira.png",  },  {    id: "mikasa",    title: "Mikasa Soccer Ball",    image: "/images/itens/ball.png",  },  {    id: "iphone",    title: "Amazon Iphone Gift Card",    image: "/images/itens/iphone.png",  },  {    id: "macbook",    title: "Amazon Macbook Gift Card",    image: "/images/itens/macbook.png",  },];
 

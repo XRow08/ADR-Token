@@ -1,7 +1,6 @@
 "use client";
 import {
   Connection,
-  Keypair,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
@@ -63,16 +62,6 @@ export function usePurchase() {
       program.programId
     );
   }
-
-  /* async function getNftCounter(program: Program<any>) {
-    const [nftCounterAddress] = await PublicKey.findProgramAddressSync(
-      [Buffer.from("nft_counter")],
-      program.programId
-    );
-    const nftCounter = await program.account.nftCounter.fetch(nftCounterAddress);
-    console.log("Total NFTs minted:", nftCounter.count);
-    return nftCounter.count;
-  } */
 
   async function onMint(amount: number) {
     try {
